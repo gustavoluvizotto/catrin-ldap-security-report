@@ -1,5 +1,7 @@
 /credentials
 /*.csv
 /.idea/*
+/.vscode/*
 /research_data/*
 /venv/*
+

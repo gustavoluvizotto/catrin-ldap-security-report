@@ -12,8 +12,8 @@ do
     day="${timestamp:6:2}"
     p="measurements/tool=goscanner/format=raw/port=${port}/scan=${scan}/result=${result}/year=${year}/month=${month}/day=${day}/"
     mkdir -p "${p}"
-    #podman run --network=host --rm -v "$(pwd)":/root/shared_dir mc cp -r storage/catrin/"${p}" shared_dir/"${p}"
-    mc cp -r storage/catrin/"${p}" "${p}"
+    podman run --network=host --rm -v "$(pwd)":/root/shared_dir mc cp -r storage/catrin/"${p}" shared_dir/"${p}"
+    #mc cp -r storage/catrin/"${p}" "${p}"
 done < ../../goscanner-port-date.csv
 
 IFS=$'\n'
