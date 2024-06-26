@@ -4,4 +4,5 @@
 /.vscode/*
 /research_data/*
 /venv/*
-
+/__pycache__/
+/checkpoint/

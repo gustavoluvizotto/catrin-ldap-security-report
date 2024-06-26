@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# make sure to have Python and Java (for pyspark) installed
+
 if [[ ! -d venv ]]; then
     python3 -m venv venv
     venv/bin/pip install --upgrade pip
@@ -11,4 +13,6 @@ venv/bin/pip install \
                 flask \
                 ipython \
                 ipaddress \
-                pyasn
+                pyasn \
+                cryptography \
+                pyspark
