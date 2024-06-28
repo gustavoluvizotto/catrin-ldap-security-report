@@ -6,3 +6,4 @@
 /venv/*
 /__pycache__/
 /checkpoint/
+/credentials_clickhouse.py

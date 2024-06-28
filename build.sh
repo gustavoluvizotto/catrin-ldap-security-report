@@ -15,4 +15,5 @@ venv/bin/pip install \
                 ipaddress \
                 pyasn \
                 cryptography \
-                pyspark
+                pyspark \
+                clickhouse-connect

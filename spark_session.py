@@ -21,10 +21,10 @@ def get_spark_instance():
     ).set("spark.driver.port", "0"
     ).set("spark.executor.instances", "1"
     ).set("spark.executor.cores", "40"
-    ).set("spark.executor.memory", "100G"
+    ).set("spark.executor.memory", "30G"
     ).set("spark.executor.memoryOverhead", "8G"
     ).set("spark.driver.cores", "12"
-    ).set("spark.driver.memory", "20G"
+    ).set("spark.driver.memory", "10G"
     )
 
     print("SparkConf created")

@@ -155,15 +155,14 @@ def _load_goscanner(goscanner_dir_fmt: str):
     goscanner_df = _combine_dataset(389).unionByName(_combine_dataset(636))
 
     return goscanner_df.select(
-        "ipv4", "port", "scan_date", "ldap_server",
-        "server_name", "protocol", "cipher",
-        "resultString", "cert_hash", "pub_key_hash",
-        "decoded_cert.issuer", "decoded_cert.subject",
-        "decoded_cert.not_valid_before", "decoded_cert.not_valid_after"
+        "ipv4", "port", "scan_date", "server_name", "resultString"
+        "protocol", "cipher", "cert_hash", "pub_key_hash",
+        "decoded_cert.issuer", "decoded_cert.subject", "decoded_cert.not_valid_before", "decoded_cert.not_valid_after",
+        "ldap_server"
     )
 
 
-def get_x509_fields(pem: str):
+def decode_cert(pem: str):
     try:
         cert = x509.load_pem_x509_certificate(str.encode(pem), default_backend())
     except ValueError:
@@ -210,7 +209,7 @@ pem_decoded_schema = pst.StructType([pst.StructField("subject", pst.ArrayType(ps
                                     ])
 
 
-decode_cert_udf = psf.udf(get_x509_fields, pem_decoded_schema)
+decode_cert_udf = psf.udf(decode_cert, pem_decoded_schema)
 
 
 def _load_pyasn_dataset():
