@@ -66,6 +66,7 @@ def _get_ciphers(clickhouse_client, ip_prefix: str) -> dict:
     query = f"SELECT cipher, count(cipher) AS count FROM {HOSTS_TABLE_NAME} WHERE isIPAddressInRange(ipv4, '{ip_prefix}') GROUP BY cipher"
     result_pdf = clickhouse_client.query_df(query)
     if not result_pdf.empty:
+        result_pdf = result_pdf[(result_pdf["cipher"].notnull())]
         result_pdf["cipher"] = result_pdf["cipher"].apply(lambda x: cipher_to_description(x))
     return dict(zip(result_pdf["cipher"].astype(str), result_pdf["count"].astype(int)))
 
@@ -73,7 +74,7 @@ def _get_protocols(clickhouse_client, ip_prefix: str) -> dict:
     query = f"SELECT protocol, count(protocol) AS count FROM {HOSTS_TABLE_NAME} WHERE isIPAddressInRange(ipv4, '{ip_prefix}') GROUP BY protocol"
     result_pdf = clickhouse_client.query_df(query)
     if not result_pdf.empty:
-        result_pdf = result_pdf[result_pdf["protocol"].notnull()]
+        result_pdf = result_pdf[(result_pdf["protocol"].notnull() & result_pdf["protocol"] != 0)]
         result_pdf["protocol"] = result_pdf["protocol"].apply(lambda x: tls_version_to_string(int(x)))
     return dict(zip(result_pdf["protocol"].astype(str), result_pdf["count"].astype(int)))
 
