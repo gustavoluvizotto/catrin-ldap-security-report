@@ -6,6 +6,7 @@ import clickhouse_connect as chc
 
 from dataset_handler import init_dataset, load_dataset, delete_dataset
 import scanning_query as sq
+import scanning_report as sr
 import credentials_clickhouse as c
 
 
@@ -57,15 +58,16 @@ def scanning_query():
 
 @app.route("/scanning_report", methods=["GET"])
 def report():
-    global dataset_scanning
-    if dataset_scanning is None:
-        return jsonify({"error": "No dataset loaded."}), 500
+    global clickhouse_client
+    #global dataset_scanning
+    #if dataset_scanning is None:
+    #    return jsonify({"error": "No dataset loaded."}), 500
 
     ip_prefix = request.args.get("ip_prefix")
     if not ip_prefix:
         return jsonify({"error": '"ip_prefix" must be provided for the query.'}), 400
 
-    return jsonify({"error": "Not implemented yet."}), 500
+    return sr.scanning_report(clickhouse_client, ip_prefix)
 
 
 def perform_dummy_query(dataset):

@@ -1,17 +1,14 @@
 __author__ = "Gustavo Luvizotto Cesar"
 __email__ = "g.luvizottocesar@utwente.nl"
 
-from datetime import datetime
-
 import ipaddress
 from flask import jsonify
-from cryptography import x509
-from cryptography.hazmat.backends import default_backend
 
 import pyspark.sql.functions as psf
 import pyspark.sql.types as pst
 
 from create_database import ZMAP_TABLE_NAME, HOSTS_TABLE_NAME, CERTS_TABLE_NAME, LDAP_TABLE_NAME, STARTTLS_TABLE_NAME
+from query_utils import decode_cert, merge_list_dict, cipher_to_description, tls_version_to_string
 
 
 def scanning_query(clickhouse_client, ip_prefix: str, dataset_scanning: dict) -> tuple:
@@ -71,6 +68,9 @@ def _get_app_layer_info(client, ip_prefix: str):
     if not certs_pdf.empty:
         certs_pdf = certs_pdf.apply(decode_cert, axis=1)
         certs_pdf = certs_pdf.drop("cert", axis=1)
+        certs_pdf["cipher"] = certs_pdf["cipher"].apply(lambda x: cipher_to_description(x))
+        certs_pdf["protocol"] = certs_pdf["protocol"].apply(lambda x: tls_version_to_string(int(x)))
+
     certs_dict = certs_pdf.to_dict(orient="records")
     result1 = merge_list_dict(hosts_dict, certs_dict)
 
@@ -83,55 +83,6 @@ def _get_app_layer_info(client, ip_prefix: str):
     result = merge_list_dict(result2, starttls_dict)
 
     return result
-
-
-def decode_cert(pdf):
-    pem = pdf["cert"]
-    try:
-        cert = x509.load_pem_x509_certificate(str.encode(pem), default_backend())
-    except ValueError:
-        # the certificate contains bytes that cannot be interpreted. Probably invalid cert
-        # https://github.com/pyca/cryptography/issues/6804
-        return pdf
-
-    subject_rdns = []
-    issuer_rdns = []
-    try:
-        issuer_rdns = [rdn.rfc4514_string() for rdn in cert.issuer.rdns]
-        subject_rdns = [rdn.rfc4514_string() for rdn in cert.subject.rdns]
-    except ValueError:
-        # the certificate contains bytes that cannot be interpreted. Probably invalid cert
-        # https://github.com/pyca/cryptography/issues/6804
-        pass
-
-    not_valid_after = None
-    try:
-        if cert.not_valid_after > datetime.min:
-            not_valid_after = cert.not_valid_after
-    except ValueError:
-        # ValueError: year 0 is out of range
-        pass
-    not_valid_before = None
-    try:
-        if cert.not_valid_before > datetime.min:
-            not_valid_before = cert.not_valid_before
-    except ValueError:
-        # ValueError: year 0 is out of range
-        pass
-
-    pdf["subject"] = subject_rdns
-    pdf["issuer"] = issuer_rdns
-    pdf["not_valid_after"] = not_valid_after
-    pdf["not_valid_before"] = not_valid_before
-    return pdf
-
-
-def merge_list_dict(data1, data2):
-    for i in data1:
-        for j in data2:
-            if i["ipv4"] == j["ipv4"] and i["port"] == j["port"]:  # and i["scan_date"] == j["scan_date"]:
-                i.update(j)
-    return data1
 
 
 def _get_tcp_layer_info_spark(ip_prefix: str, zmap_df):
