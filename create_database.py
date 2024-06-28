@@ -1,3 +1,6 @@
+__author__ = "Gustavo Luvizotto Cesar"
+__email__ = "g.luvizottocesar@utwente.nl"
+
 from datetime import datetime
 
 import pandas as pd
@@ -12,8 +15,8 @@ STARTTLS_TABLE_NAME = "starttls_ldap"
 LDAP_TABLE_NAME = "ldap"
 CERTS_TABLE_NAME = "certs"
 
-def main():
 
+def main():
     client = chc.get_client(host='localhost', port=8123, username='default', password=c.default_user)
 
     load_zmap(client)
@@ -99,14 +102,6 @@ def _insert_into_ldap(client, goscanner_dir, scan_date, port):
 
 def _insert_into_starttls_ldap(client, goscanner_dir, scan_date, port):
     _ = client.query(f"INSERT INTO {STARTTLS_TABLE_NAME} SELECT id,starttls,ldap_server,responded_to_starttls,result_code,matched_dn,diagnostic_message,error_data, {port} as port, formatDateTime(toDate('{scan_date}'), '%F', 'Etc/UTC') as scan_date FROM s3('http://localhost:8080/{goscanner_dir}/*.csv', '{c.aws_access_key_id}', '{c.aws_secret_access_key}', 'CSVWithNames')")
-
-
-def sandbox(client) -> None:
-    prefix = "20.92.191.0/24"
-
-    result.result_rows
-
-    _ = client.query(f"DROP TABLE {ZMAP_TABLE_NAME}")
 
 
 if __name__ == "__main__":

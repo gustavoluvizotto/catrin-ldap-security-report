@@ -4,14 +4,12 @@ __email__ = "g.luvizottocesar@utwente.nl"
 from flask import Flask, request, jsonify
 import clickhouse_connect as chc
 
-from dataset_handler import init_dataset, load_dataset, delete_dataset
 import scanning_query as sq
 import scanning_report as sr
 import credentials_clickhouse as c
 
 
 app = Flask("NIP")
-dataset_scanning = None
 clickhouse_client = None
 
 
@@ -45,23 +43,21 @@ def scanning_query():
     :return: see sq.scanning_query
     '''
     global clickhouse_client
-    #global dataset_scanning
-    #if dataset_scanning is None:
-    #    return jsonify({"error": "No dataset loaded."}), 500
+    if clickhouse_client is None:
+        return jsonify({"error": "No dataset loaded."}), 500
 
     ip_prefix = request.args.get("ip_prefix")
     if not ip_prefix:
         return jsonify({"error": '"ip_prefix" must be provided for the query.'}), 400
 
-    return sq.scanning_query(clickhouse_client, ip_prefix, dataset_scanning)
+    return sq.scanning_query(clickhouse_client, ip_prefix)
 
 
 @app.route("/scanning_report", methods=["GET"])
 def report():
     global clickhouse_client
-    #global dataset_scanning
-    #if dataset_scanning is None:
-    #    return jsonify({"error": "No dataset loaded."}), 500
+    if clickhouse_client is None:
+        return jsonify({"error": "No dataset loaded."}), 500
 
     ip_prefix = request.args.get("ip_prefix")
     if not ip_prefix:
@@ -70,19 +66,7 @@ def report():
     return sr.scanning_report(clickhouse_client, ip_prefix)
 
 
-def perform_dummy_query(dataset):
-    for d in dataset.values():
-        d.groupBy("port").count().show()
-
-
 if __name__ == "__main__":
-    #init_dataset()
-    #dataset_scanning = load_dataset()
-    #perform_dummy_query(dataset_scanning)
-
     clickhouse_client = chc.get_client(host='localhost', port=8123, username='default', password=c.default_user)
 
     app.run(port=5000, host="0.0.0.0", use_reloader=False, debug=True)
-
-    #delete_dataset(dataset_scanning)
-    dataset_scanning = None

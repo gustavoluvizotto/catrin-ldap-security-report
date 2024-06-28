@@ -4,14 +4,11 @@ __email__ = "g.luvizottocesar@utwente.nl"
 import ipaddress
 from flask import jsonify
 
-import pyspark.sql.functions as psf
-import pyspark.sql.types as pst
-
 from create_database import ZMAP_TABLE_NAME, HOSTS_TABLE_NAME, CERTS_TABLE_NAME, LDAP_TABLE_NAME, STARTTLS_TABLE_NAME
 from query_utils import decode_cert, merge_list_dict, cipher_to_description, tls_version_to_string
 
 
-def scanning_query(clickhouse_client, ip_prefix: str, dataset_scanning: dict) -> tuple:
+def scanning_query(clickhouse_client, ip_prefix: str) -> tuple:
     '''
     return:
         str([{
@@ -43,8 +40,6 @@ def scanning_query(clickhouse_client, ip_prefix: str, dataset_scanning: dict) ->
         return jsonify({"error": f'Invalid "ip_prefix". Error: {e}'}), 400
 
     try:
-        #result1 = _get_tcp_layer_info_spark(ip_prefix, dataset_scanning["zmap"])
-        #result2 = _get_app_layer_info_spark(ip_prefix, dataset_scanning["goscanner"])
         result1 = _get_tcp_layer_info(clickhouse_client, ip_prefix)
         result2 = _get_app_layer_info(clickhouse_client, ip_prefix)
         result = merge_list_dict(result1, result2)
@@ -83,30 +78,3 @@ def _get_app_layer_info(client, ip_prefix: str):
     result = merge_list_dict(result2, starttls_dict)
 
     return result
-
-
-def _get_tcp_layer_info_spark(ip_prefix: str, zmap_df):
-    zmap_df = zmap_df.withColumn("is_ip_in_prefix",
-                                 is_ip_in_prefix_udf(psf.col("ipv4"),
-                                                     psf.lit(ip_prefix)))
-    zmap_dict = zmap_df.filter(
-        psf.col("is_ip_in_prefix") == True
-    ).drop("is_ip_in_prefix").toPandas().to_dict(orient="records")
-    return zmap_dict
-
-
-def is_ip_in_prefix(ip: str, prefix: str) -> bool:
-    return ipaddress.ip_address(ip) in ipaddress.ip_network(prefix)
-
-
-is_ip_in_prefix_udf = psf.udf(is_ip_in_prefix, pst.BooleanType())
-
-
-def _get_app_layer_info_spark(ip_prefix: str, goscanner_df):
-    goscanner_df = goscanner_df.withColumn("is_ip_in_prefix",
-                                           is_ip_in_prefix_udf(psf.col("ipv4"),
-                                                               psf.lit(ip_prefix)))
-    goscanner_dict = goscanner_df.filter(
-        psf.col("is_ip_in_prefix") == True
-    ).drop("is_ip_in_prefix").toPandas().to_dict(orient="records")
-    return goscanner_dict

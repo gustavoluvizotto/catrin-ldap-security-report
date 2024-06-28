@@ -12,8 +12,6 @@ venv/bin/pip install \
                 pandas \
                 flask \
                 ipython \
-                ipaddress \
                 pyasn \
                 cryptography \
-                pyspark \
                 clickhouse-connect
