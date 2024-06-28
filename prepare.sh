@@ -1,8 +1,20 @@
 #!/bin/bash
 
-# Install ClickHouse before this script
-# https://clickhouse.com/docs/en/install#available-installation-options
-# service clickhouse-server start
+# make sure to have Python and Java (for pyspark) installed
+
+if [[ ! -d venv ]]; then
+    python3 -m venv venv
+    venv/bin/pip install --upgrade pip
+fi
+
+venv/bin/pip install \
+                pip-autoremove \
+                pandas \
+                flask \
+                ipython \
+                pyasn \
+                cryptography \
+                clickhouse-connect
 
 go run latest_scans.go || exit 1
 
