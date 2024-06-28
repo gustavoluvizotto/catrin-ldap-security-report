@@ -1,7 +1,11 @@
 __author__ = "Gustavo Luvizotto Cesar"
 __email__ = "g.luvizottocesar@utwente.nl"
 
+import traceback
+import math
+
 import ipaddress
+import pandas as pd
 from flask import jsonify
 
 from create_database import ZMAP_TABLE_NAME, HOSTS_TABLE_NAME, CERTS_TABLE_NAME, LDAP_TABLE_NAME, STARTTLS_TABLE_NAME
@@ -45,6 +49,7 @@ def scanning_report(clickhouse_client, ip_prefix: str):
         }
         return jsonify(result), 200
     except Exception as e:
+        #stack_trace = traceback.format_exc()
         return jsonify({"error": str(e)}), 500
 
 def _get_nr_ips(clickhouse_client, ip_prefix: str) -> int:
@@ -68,6 +73,7 @@ def _get_protocols(clickhouse_client, ip_prefix: str) -> dict:
     query = f"SELECT protocol, count(protocol) AS count FROM {HOSTS_TABLE_NAME} WHERE isIPAddressInRange(ipv4, '{ip_prefix}') GROUP BY protocol"
     result_pdf = clickhouse_client.query_df(query)
     if not result_pdf.empty:
+        result_pdf = result_pdf[result_pdf["protocol"].notnull()]
         result_pdf["protocol"] = result_pdf["protocol"].apply(lambda x: tls_version_to_string(int(x)))
     return dict(zip(result_pdf["protocol"].astype(str), result_pdf["count"].astype(int)))
 

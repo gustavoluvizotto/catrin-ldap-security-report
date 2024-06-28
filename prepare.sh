@@ -11,6 +11,8 @@ venv/bin/pip install \
                 pip-autoremove \
                 pandas \
                 flask \
+                flask-cors \
+                ipaddress \
                 ipython \
                 pyasn \
                 cryptography \

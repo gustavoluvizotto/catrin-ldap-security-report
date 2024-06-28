@@ -2,6 +2,7 @@ __author__ = "Gustavo Luvizotto Cesar"
 __email__ = "g.luvizottocesar@utwente.nl"
 
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 import clickhouse_connect as chc
 
 import scanning_query as sq
@@ -10,6 +11,7 @@ import credentials_clickhouse as c
 
 
 app = Flask("NIP")
+CORS(app, resources={r"/*": {"origins": "*"}})
 clickhouse_client = None
 
 
