@@ -4,17 +4,21 @@
 
 You two credentials files: ```credentials``` and ```credentials_clickhouse.py```  
 
+credentials:  
+
 ```shell
 [read]
 aws_access_key_id = 
 aws_secret_access_key = 
-```credentials
+```
+
+credentials_clickhouse.py:  
 
 ```python
 default_user = ""
 aws_access_key_id = ""
 aws_secret_access_key = ""
-```credentials_clickhouse.py
+```
 
 The ```aws``` keys are to access the S3 data storage and the ```default_user``` is the key of the clickhouse database default user.  
 
