@@ -11,7 +11,7 @@ import credentials_clickhouse as c
 
 
 app = Flask("NIP")
-CORS(app, resources={r"/*": {"origins": "*"}})
+CORS(app, resources={r"/*": {"origins": "http://demodev.responsible-internet.org"}})
 clickhouse_client = None
 
 
