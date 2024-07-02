@@ -60,23 +60,30 @@ def _get_nr_ips(clickhouse_client, ip_prefix: str) -> int:
 def _get_ports(clickhouse_client, ip_prefix: str) -> list:
     query = f"SELECT DISTINCT port FROM {ZMAP_TABLE_NAME} WHERE isIPAddressInRange(ipv4, '{ip_prefix}')"
     result_pdf = clickhouse_client.query_df(query)
-    return result_pdf["port"].tolist()
+    ports = []
+    if not result_pdf.empty:
+        ports = result_pdf["port"].tolist()
+    return ports
 
 def _get_ciphers(clickhouse_client, ip_prefix: str) -> dict:
     query = f"SELECT cipher, count(cipher) AS count FROM {HOSTS_TABLE_NAME} WHERE isIPAddressInRange(ipv4, '{ip_prefix}') GROUP BY cipher"
     result_pdf = clickhouse_client.query_df(query)
+    cipher = {}
     if not result_pdf.empty:
         result_pdf = result_pdf[(result_pdf["cipher"].notnull())]
         result_pdf["cipher"] = result_pdf["cipher"].apply(lambda x: cipher_to_description(x))
-    return dict(zip(result_pdf["cipher"].astype(str), result_pdf["count"].astype(int)))
+        cipher = dict(zip(result_pdf["cipher"].astype(str), result_pdf["count"].astype(int)))
+    return cipher
 
 def _get_protocols(clickhouse_client, ip_prefix: str) -> dict:
     query = f"SELECT protocol, count(protocol) AS count FROM {HOSTS_TABLE_NAME} WHERE isIPAddressInRange(ipv4, '{ip_prefix}') GROUP BY protocol"
     result_pdf = clickhouse_client.query_df(query)
+    protocol = {}
     if not result_pdf.empty:
         result_pdf = result_pdf[(result_pdf["protocol"].notnull() & result_pdf["protocol"] != 0)]
         result_pdf["protocol"] = result_pdf["protocol"].apply(lambda x: tls_version_to_string(int(x)))
-    return dict(zip(result_pdf["protocol"].astype(str), result_pdf["count"].astype(int)))
+        protocol = dict(zip(result_pdf["protocol"].astype(str), result_pdf["count"].astype(int)))
+    return protocol
 
 def _get_nr_invalid_date_cert(clickhouse_client, ip_prefix: str) -> int:
     query = f"SELECT {HOSTS_TABLE_NAME}.ipv4, {HOSTS_TABLE_NAME}.protocol, {HOSTS_TABLE_NAME}.cipher, {HOSTS_TABLE_NAME}.cert_hash, {HOSTS_TABLE_NAME}.pub_key_hash, {CERTS_TABLE_NAME}.cert, {HOSTS_TABLE_NAME}.scan_date, {HOSTS_TABLE_NAME}.port FROM {HOSTS_TABLE_NAME} INNER JOIN {CERTS_TABLE_NAME} ON {HOSTS_TABLE_NAME}.cert_id={CERTS_TABLE_NAME}.id AND {HOSTS_TABLE_NAME}.scan_date={CERTS_TABLE_NAME}.scan_date AND {HOSTS_TABLE_NAME}.port={CERTS_TABLE_NAME}.port WHERE isIPAddressInRange({HOSTS_TABLE_NAME}.ipv4, '{ip_prefix}')"
