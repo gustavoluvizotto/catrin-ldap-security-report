@@ -1,5 +1,4 @@
 __author__ = "Gustavo Luvizotto Cesar"
-__email__ = "g.luvizottocesar@utwente.nl"
 
 from flask import Flask, request, jsonify
 from flask_cors import CORS
@@ -69,6 +68,6 @@ def report():
 
 
 if __name__ == "__main__":
-    clickhouse_client = chc.get_client(host='localhost', port=8123, username='default', password=c.default_user)
+    clickhouse_client = chc.get_client(host=c.host, port=c.port, username=c.default_user, password=c.default_password)
 
     app.run(port=5000, host="0.0.0.0", use_reloader=False, debug=True)

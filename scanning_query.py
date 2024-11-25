@@ -1,5 +1,4 @@
 __author__ = "Gustavo Luvizotto Cesar"
-__email__ = "g.luvizottocesar@utwente.nl"
 
 import ipaddress
 from flask import jsonify
