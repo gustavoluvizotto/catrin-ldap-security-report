@@ -1,12 +1,15 @@
+import csv
+import json
+
 def get_path(asn):
     if asn == 15625:
-        csvFilePath = "/home/catrin/data/dataset/path_finding/ing.csv"
+        csvFilePath = "/home/catrin/data/dataset/path-finding/ing.csv"
         data = get_json_from_csv(csvFilePath)
     elif asn == 15916:
-        csvFilePath = "/home/catrin/data/dataset/path_finding/abn.csv"
+        csvFilePath = "/home/catrin/data/dataset/path-finding/abn.csv"
         data = get_json_from_csv(csvFilePath)
     elif asn == 40985:
-        csvFilePath = "/home/catrin/data/dataset/path_finding/eneco.csv"
+        csvFilePath = "/home/catrin/data/dataset/path-finding/eneco.csv"
         data = get_json_from_csv(csvFilePath)
     else:
         data = { 'error': 'Invalid input'}

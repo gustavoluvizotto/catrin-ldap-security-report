@@ -3,6 +3,7 @@ __author__ = "Gustavo Luvizotto Cesar"
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import clickhouse_connect as chc
+from flask import Response
 
 import scanning_query as sq
 import scanning_report as sr
