@@ -2,17 +2,16 @@ __author__ = "Gustavo Luvizotto Cesar"
 
 from datetime import datetime
 
-import pandas as pd
-
 import clickhouse_connect as chc
 import credentials_clickhouse as c
-
+import pandas as pd
 
 ZMAP_TABLE_NAME = "zmap"
 HOSTS_TABLE_NAME = "hosts"
 STARTTLS_TABLE_NAME = "starttls_ldap"
 LDAP_TABLE_NAME = "ldap"
 CERTS_TABLE_NAME = "certs"
+ALERTS_TABLE_NAME = "alerts"
 
 
 def main():
@@ -21,6 +20,8 @@ def main():
     load_zmap(client)
 
     load_goscanner(client)
+
+    prepare_alerts(client)
 
 
 def load_zmap(client):
@@ -102,6 +103,10 @@ def _insert_into_ldap(client, goscanner_dir, scan_date, port):
 def _insert_into_starttls_ldap(client, goscanner_dir, scan_date, port):
     _ = client.query(f"INSERT INTO {STARTTLS_TABLE_NAME} SELECT id,starttls,ldap_server,responded_to_starttls,result_code,matched_dn,diagnostic_message,error_data, {port} as port, formatDateTime(toDate('{scan_date}'), '%F', 'Etc/UTC') as scan_date FROM s3('http://localhost:8080/{goscanner_dir}/*.csv', '{c.aws_access_key_id}', '{c.aws_secret_access_key}', 'CSVWithNames')")
 
+def prepare_alerts(client):
+    # create table
+    _ = client.query(f"CREATE TABLE {ALERTS_TABLE_NAME} (uid UInt32, attacker String, attacker_port UInt16, sid UInt16, msg String, datetime DateTime('Etc/UTC')) ENGINE = MergeTree ORDER BY (attacker, datetime)")
+    
 
 if __name__ == "__main__":
     main()
