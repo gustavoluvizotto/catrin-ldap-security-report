@@ -24,49 +24,106 @@ def show_mb_results(ip):
             },
             "as_information": {
                 "asn": "AS27",
-                "organization": "University of Maryland"
+                "as_name": "UMDNET",
+                "organization": "University of Maryland",
+                "total_ipv4_prefixes": 7,
+                "total_ipv4_address": 139776
+            },
+            "vendor_information": "Vendor could not be identified",
+            "security_evaluation": {
+                "open_ports": [
+                    {"port_number": 179, "service_name": "BGP"}
+                ],
+                "vulnerabilities": "There is no vulnerability for this middlebox."
             }
         },
         '80.95.199.213': {
-            "detected_modifications": [],
+            "detected_modifications": [
+                "IP Hash Modified",
+                "TCP Hash Modified",
+                "Complete Hash Modified",
+                "TCP MP Capable Removed",
+                "TCP NOP Added"
+            ],
             "geolocation_information": {
-                "country": "United Kingdom [GB]",
+                "country": "United Kingdom of Great Britain and Northern Ireland [GB]",
                 "region": "England",
                 "city": "London",
-                "coordinates": "51.5074, -0.1278"
+                "coordinates": "51.508530, -0.125740 (51°30'31\"N 0°7'33\"W)"
             },
             "as_information": {
-                "asn": "AS12345",
-                "organization": "Example Org"
+                "asn": "AS51561",
+                "as_name": "AS-ICUK",
+                "organization": "ICUK Computing Services Limited",
+                "total_ipv4_prefixes": 56,
+                "total_ipv4_address": 58690
+            },
+            "vendor_information": {
+                "cpes": [
+                    "o:microsoft:windows",
+                    "a:microsoft:internet_information_services",
+                    "a:microsoft:internet_information_services:7.5"
+                ]
+            },
+            "security_evaluation": {
+                "open_ports": [
+                    {"port_number": 80, "service_name": "HTTP"},
+                    {"port_number": 264, "service_name": "CHECKPOINT_TOPOLOGY"},
+                    {"port_number": 389, "service_name": "LDAP"},
+                    {"port_number": 443, "service_name": "HTTP"},
+                    {"port_number": 4433, "service_name": "HTTP"}
+                ],
+                "vulnerabilities": [
+                    "CVE-2010-1899",
+                    "CVE-2010-3972",
+                    "CVE-2010-2730"
+                ]
             }
         },
         '132.235.231.170': {
             "detected_modifications": [
-                "TCP Window Size Modified"
+                "Receiver Window or Urgent Pointer Modified"
             ],
             "geolocation_information": {
                 "country": "United States of America [US]",
-                "region": "California",
-                "city": "Los Angeles",
-                "coordinates": "34.0522, -118.2437"
+                "region": "Ohio",
+                "city": "Athens",
+                "coordinates": "39.316150, -82.095210 (39°18'58\"N 82°5'43\"W)"
             },
             "as_information": {
-                "asn": "AS67890",
-                "organization": "Another Org"
-            }
+                "asn": "AS17135",
+                "as_name": "OHIOU",
+                "organization": "Ohio University",
+                "total_ipv4_prefixes": 4,
+                "total_ipv4_address": 82688
+            },
+            "vendor_information": "Vendor could not be identified",
+            "security_evaluation": "No information available"
         },
         '132.235.185.140': {
-            "detected_modifications": [],
+            "detected_modifications": [
+                "Timestamp Removed or Data set to 0",
+                "Complete Hash Modified",
+                "TCP Sack Permitted Removed",
+                "TCP Timestamp Removed",
+                "TCP NOP Added"
+            ],
             "geolocation_information": {
                 "country": "United States of America [US]",
-                "region": "Texas",
-                "city": "Austin",
-                "coordinates": "30.2672, -97.7431"
+                "region": "Ohio",
+                "city": "Athens",
+                "coordinates": "39.316150, -82.095210 (39°18'58\"N 82°5'43\"W)"
             },
             "as_information": {
-                "asn": "AS54321",
-                "organization": "Third Org"
-            }
+                "asn": "AS17135",
+                "as_name": "OHIOU",
+                "organization": "Ohio University",
+                "total_ipv4_prefixes": 4,
+                "total_ipv4_address": 82688
+            },
+            "vendor_information": "Vendor could not be identified",
+            "security_evaluation": "No information available"
         }
     }
-    return ip_data.get(ip, {})
+
+    return ip_data.get(ip, {"error": "IP address not found"})
