@@ -1,18 +1,18 @@
 __author__ = "Gustavo Luvizotto Cesar"
 
 import json
-from flask import Flask, request, jsonify
-from flask_cors import CORS
-import clickhouse_connect as chc
-from flask import Response
 
+import clickhouse_connect as chc
+import credentials_clickhouse as c
+from flask import Flask, Response, jsonify, request
+from flask_cors import CORS
+
+import middlebox_data as mbdata
+import path_data as pdata
 import scanning_query as sq
 import scanning_report as sr
 import security_events as se
-import credentials_clickhouse as c
-import middlebox_data as mbdata
 import show_mb_results as smr
-import path_data as pdata
 
 app = Flask("NIP")
 CORS(app, resources={r"/*": {"origins": "http://demodev.responsible-internet.org"}})
@@ -86,7 +86,7 @@ def get_path_by_asn(asn: int):
         return jsonify({ 'error': 'Path from that source asn does not exist'}), 404
     return jsonify(path)
 
-@app.route("/scanning_events", methods=["POST"])
+@app.route("/security_events", methods=["POST"])
 def security_events_push():
     global clickhouse_client
     if clickhouse_client is None:
@@ -97,7 +97,7 @@ def security_events_push():
     return se.push(clickhouse_client, logs)
 
 
-@app.route("/scanning_events", methods=["GET"])
+@app.route("/security_events", methods=["GET"])
 def security_events_query():
     global clickhouse_client
     if clickhouse_client is None:
@@ -110,7 +110,7 @@ def security_events_query():
     return se.query(clickhouse_client, ip_prefix)
 
 
-@app.route("/scanning_events", methods=["DELETE"])
+@app.route("/security_events", methods=["DELETE"])
 def security_events_prune():
     global clickhouse_client
     if clickhouse_client is None:
