@@ -7,7 +7,9 @@ import clickhouse_connect as chc
 import scanning_query as sq
 import scanning_report as sr
 import credentials_clickhouse as c
-
+import middlebox_data as mbdata
+import show_mb_results as smr
+import path_data as pdata
 
 app = Flask("NIP")
 CORS(app, resources={r"/*": {"origins": "http://demodev.responsible-internet.org"}})
@@ -66,6 +68,20 @@ def report():
 
     return sr.scanning_report(clickhouse_client, ip_prefix)
 
+@app.route('/middlebox_info', methods=['GET'])
+def middlebox_info():
+    address = request.args.get('address')
+    if not address:
+        return jsonify({"error": "Address is required"}), 400
+
+    return jsonify(smr.get_info_for_address(address))
+
+@app.route('/paths/<int:asn>', methods=['GET'])
+def get_path_by_asn(asn: int):
+    path = pdata.get_path(asn)
+    if path is None:
+        return jsonify({ 'error': 'Path from that source asn does not exist'}), 404
+    return jsonify(path)
 
 if __name__ == "__main__":
     clickhouse_client = chc.get_client(host=c.host, port=c.port, username=c.default_user, password=c.default_password)
