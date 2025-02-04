@@ -8,7 +8,7 @@ def get_middlebox_ips(address):
     return address_map.get(address, [])
 
 def show_mb_results(ip):
-    ip_data = {
+        ip_data = {
         '128.8.144.162': {
             "detected_modifications": [
                 "TCP Hash Modified",
