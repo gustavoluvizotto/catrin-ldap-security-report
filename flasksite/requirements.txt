@@ -1,0 +1,9 @@
+pip-autoremove
+pandas
+flask
+flask-cors
+ipaddress
+ipython
+pyasn
+cryptography
+clickhouse-connect

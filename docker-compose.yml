@@ -1,0 +1,71 @@
+services:
+  flask:
+    build: 
+      context: ./flasksite
+      dockerfile: Dockerfile
+    environment:
+      DATABASE_HOST: postgres
+      N_WORKERS: 5
+    volumes:
+      - ./flasksite:/flasksite:rw
+      - flasksite_dynamic:/flasksite_dynamic:rw
+      - ./flasksite_data:/flasksite_data:rw
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    networks:
+      - middle
+      
+  nginx:
+    image: nginx
+    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+    volumes:
+      - flasksite_dynamic:/flasksite_dynamic:ro
+      - ./flasksite_data:/flasksite_data:ro
+      - ./nginx:/etc/nginx:rw
+      - letsencrypt:/letsencrypt:ro
+      - certbot:/certbot:ro
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - front
+      - middle
+    depends_on:
+      - flask
+
+  certbot:
+    image: certbot/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    volumes:
+      - letsencrypt:/etc/letsencrypt:rw
+      - certbot:/var/www/certbot:rw
+    restart: unless-stopped
+    networks:
+      - isolated
+    depends_on:
+      - nginx
+
+volumes:
+  flasksite_dynamic:
+  certbot:
+  letsencrypt:
+
+networks:
+  isolated:
+    driver: bridge
+
+  front:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.40.101.0/24
+
+  middle:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.40.111.0/24
