@@ -80,7 +80,7 @@ def middlebox_info():
     return jsonify(smr.get_info_for_address(address))
 
 @app.route('/paths/<int:asn>', methods=['GET'])
-def get_path_by_asn(asn: int):
+def nip_list_paths(asn: int):
     path = pdata.get_path(asn)
     if path is None:
         return jsonify({ 'error': 'Path from that source asn does not exist'}), 404
