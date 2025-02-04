@@ -1,14 +1,14 @@
 import csv
 import json
 
-def get_path(asn):
-    if asn == 15625:
+def get_path(src_asn, dst_asn=8075):
+    if src_asn == 15625:
         csvFilePath = "/home/catrin/data/dataset/path-finding/ing.csv"
         data = get_json_from_csv(csvFilePath)
-    elif asn == 15916:
+    elif src_asn == 15916:
         csvFilePath = "/home/catrin/data/dataset/path-finding/abn.csv"
         data = get_json_from_csv(csvFilePath)
-    elif asn == 40985:
+    elif src_asn == 40985:
         csvFilePath = "/home/catrin/data/dataset/path-finding/eneco.csv"
         data = get_json_from_csv(csvFilePath)
     else:
