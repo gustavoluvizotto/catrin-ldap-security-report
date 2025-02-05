@@ -6,9 +6,8 @@ from datetime import datetime
 import clickhouse_connect
 import clickhouse_connect.driver
 import clickhouse_connect.driver.client
-from flask import Response, jsonify
-
 from create_database import ALERTS_TABLE_NAME
+from flask import Response, jsonify
 
 ALERTS_DIR_FORMAT = "catrin/measurements/tool=goscanner/format=raw/port={port}/scan={scan}/result={result}/year={year}/month={month:02}/day={day:02}"
 
@@ -18,7 +17,7 @@ def push(clickhouse_client: clickhouse_connect.driver.client.Client, logs: list[
         try:
             _ = clickhouse_client.query(
 f"INSERT INTO {ALERTS_TABLE_NAME} \
-SELECT {log['log.id.uid']} as uid, {log['rule.attacker.ip']} as attacker, {log['rule.attacker.port']} as attacker_port, {log['rule.sid']} as sid, {log['rule.name']} as msg, formatDateTime(toDate('{log['@timestamp']}'), '%F', 'Etc/UTC') as datetime"
+SELECT {log['log.source.id']} as id, {log['log.id.uid']} as uid, {log['rule.attacker.ip']} as attacker, {log['rule.attacker.port']} as attacker_port, {log['rule.sid']} as sid, {log['rule.name']} as msg, formatDateTime(toDate('{log['@timestamp']}'), '%F', 'Etc/UTC') as datetime"
 )
         except Exception as e:
             return jsonify({"error": str(e)}), 500
@@ -30,6 +29,7 @@ def query(clickhouse_client: clickhouse_connect.driver.client.Client, ip_prefix:
     return:
         str([{
             (mandatory)
+            "id": str,
             "uid": int,
             "attacker": str,
             "sid": int,

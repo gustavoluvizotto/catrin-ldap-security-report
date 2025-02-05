@@ -1,8 +1,10 @@
 /credentials
-/*.csv
 /.idea/*
 /.vscode/*
 /research_data/*
 /venv/*
+**/*/__pycache__/*
 /__pycache__/
+/db/
 /credentials_clickhouse.py
+**/*credentials*

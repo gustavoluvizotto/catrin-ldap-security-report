@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 if ! [ -x "$(command -v podman-compose)" ]; then
   echo 'Error: podman-compose is not installed.' >&2

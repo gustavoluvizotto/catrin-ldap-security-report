@@ -4,15 +4,15 @@ import json
 
 import clickhouse_connect as chc
 import credentials_clickhouse as c
-from flask import Flask, Response, jsonify, request
-from flask_cors import CORS
-
+import credentials_security_events as cse
 import middlebox_data as mbdata
 import path_data as pdata
 import scanning_query as sq
 import scanning_report as sr
 import security_events as se
 import show_mb_results as smr
+from flask import Flask, Response, jsonify, request
+from flask_cors import CORS
 
 app = Flask("NIP")
 CORS(app, resources={r"/*": {"origins": "http://demodev.responsible-internet.org"}})
@@ -88,6 +88,13 @@ def nip_list_paths(src_asn: int, dst_asn: int):
 
 @app.route("/security_events", methods=["POST"])
 def security_events_push():
+    if not request.headers.has_key("X-API-Key"):
+        return jsonify({"error": "API key is required."}), 403
+
+    api_key = request.headers.get("X-API-Key")
+    if api_key not in cse.API_KEYS:
+        return jsonify({"error": "Invalid API key."}), 403
+    
     global clickhouse_client
     if clickhouse_client is None:
         return jsonify({"error": "No dataset loaded."}), 500
@@ -112,6 +119,13 @@ def security_events_query():
 
 @app.route("/security_events", methods=["DELETE"])
 def security_events_prune():
+    if not request.headers.has_key("X-API-Key"):
+        return jsonify({"error": "API key is required."}), 403
+
+    api_key = request.headers.get("X-API-Key")
+    if api_key not in cse.API_KEYS:
+        return jsonify({"error": "Invalid API key."}), 403
+    
     global clickhouse_client
     if clickhouse_client is None:
         return jsonify({"error": "No dataset loaded."}), 500

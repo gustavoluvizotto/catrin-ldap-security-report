@@ -28,19 +28,22 @@ WORKDIR /flasksite
 RUN mkdir /nginx
 
 # Install GO
-RUN wget https://git.io/go-installer.sh \
-    && bash go-installer.sh \
+RUN rm -rf /usr/local/go \
+    && wget https://go.dev/dl/go1.23.6.linux-amd64.tar.gz \
+    && tar -C /usr/local -xzf go1.23.6.linux-amd64.tar.gz \
     && apt-get upgrade -y \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Clickhous
-RUN curl -fsSL 'https://packages.clickhouse.com/rpm/lts/repodata/repomd.xml.key' | gpg --dearmor -o /usr/share/keyrings/clickhouse-keyring.gpg \
-    && ARCH=$(dpkg --print-architecture) \
-    && echo "deb [signed-by=/usr/share/keyrings/clickhouse-keyring.gpg arch=${ARCH}] https://packages.clickhouse.com/deb stable main" | tee /etc/apt/sources.list.d/clickhouse.list \
-    && apt-get update \
-    && apt-get install -y --no-install-recommends clickhouse-server clickhouse-client \
-    && apt-get upgrade -y \
-    && rm -rf /var/lib/apt/lists/*
+ENV PATH="$PATH:/usr/local/go/bin"
+
+# Install Clickhouse
+#RUN curl -fsSL 'https://packages.clickhouse.com/rpm/lts/repodata/repomd.xml.key' | gpg --dearmor -o /usr/share/keyrings/clickhouse-keyring.gpg \
+#    && ARCH=$(dpkg --print-architecture) \
+#    && echo "deb [signed-by=/usr/share/keyrings/clickhouse-keyring.gpg arch=${ARCH}] https://packages.clickhouse.com/deb stable main" | tee /etc/apt/sources.list.d/clickhouse.list \
+#    && apt-get update \
+#    && apt-get install -y --no-install-recommends clickhouse-server clickhouse-client \
+#    && apt-get upgrade -y \
+#    && rm -rf /var/lib/apt/lists/*
 
 RUN mkdir /venv
 RUN python3 -m venv /venv

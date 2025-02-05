@@ -1,0 +1,12 @@
+389,ldap_metadata,ldap_root_dse,20240626
+389,starttls_ldap,starttls_ldap,20240626
+389,tcp,hosts,20240626
+389,tls,cert_chain,20240626
+389,tls,certs,20240626
+389,tls,tls_verbose,20240626
+636,ldap_metadata,ldap_root_dse,20240625
+636,ldap,ldap,20240625
+636,tcp,hosts,20240625
+636,tls,cert_chain,20240625
+636,tls,certs,20240625
+636,tls,tls_verbose,20240625

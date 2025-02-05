@@ -15,7 +15,7 @@ ALERTS_TABLE_NAME = "alerts"
 
 
 def main():
-    client = chc.get_client(host='localhost', port=8123, username='default', password=c.default_user)
+    client = chc.get_client(host=c.host, port=c.port, username=c.default_user, password=c.default_password)
 
     load_zmap(client)
 
@@ -105,7 +105,7 @@ def _insert_into_starttls_ldap(client, goscanner_dir, scan_date, port):
 
 def prepare_alerts(client):
     # create table
-    _ = client.query(f"CREATE TABLE {ALERTS_TABLE_NAME} (uid UInt32, attacker String, attacker_port UInt16, sid UInt16, msg String, datetime DateTime('Etc/UTC')) ENGINE = MergeTree ORDER BY (attacker, datetime)")
+    _ = client.query(f"CREATE TABLE {ALERTS_TABLE_NAME} (id String, uid UInt32, attacker String, attacker_port UInt16, sid UInt16, msg String, datetime DateTime('Etc/UTC')) ENGINE = MergeTree ORDER BY (attacker, datetime)")
     
 
 if __name__ == "__main__":

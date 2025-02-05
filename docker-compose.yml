@@ -1,23 +1,38 @@
 services:
+  clickhouse-server:
+    image: docker.io/clickhouse/clickhouse-server
+    container_name: clickhouse-server
+    ports:
+      - '8123:8123'
+      - '9000:9000'
+    environment:
+      CLICKHOUSE_USER: 'default'
+      CLICKHOUSE_PASSWORD: '2Hgg8Bs7xV'
+    volumes:
+      - ./db:/var/lib/clickhouse
+    ulimits:
+      nofile: 262144
+    networks:
+      - middle
+
   flask:
     build: 
       context: ./flasksite
       dockerfile: Dockerfile
     environment:
       DATABASE_HOST: postgres
-      N_WORKERS: 5
     volumes:
       - ./flasksite:/flasksite:rw
       - flasksite_dynamic:/flasksite_dynamic:rw
       - ./flasksite_data:/flasksite_data:rw
     restart: unless-stopped
     ports:
-      - "8080:8080"
+      - "5000:5000"
     networks:
       - middle
       
   nginx:
-    image: nginx
+    image: docker.io/nginx
     command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
     volumes:
       - flasksite_dynamic:/flasksite_dynamic:ro
@@ -36,7 +51,7 @@ services:
       - flask
 
   certbot:
-    image: certbot/certbot
+    image: docker.io/certbot/certbot
     entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
     volumes:
       - letsencrypt:/etc/letsencrypt:rw
@@ -44,8 +59,8 @@ services:
     restart: unless-stopped
     networks:
       - isolated
-    depends_on:
-      - nginx
+        #depends_on:
+        #- nginx
 
 volumes:
   flasksite_dynamic:
