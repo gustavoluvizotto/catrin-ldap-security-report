@@ -88,10 +88,10 @@ def nip_list_paths(src_asn: int, dst_asn: int):
 
 @app.route("/security_events", methods=["POST"])
 def security_events_push():
-    if not request.headers.has_key("X-API-Key"):
+    if "X-API-Key" not in request.headers:
         return jsonify({"error": "API key is required."}), 403
 
-    api_key = request.headers.get("X-API-Key")
+    api_key = request.headers["X-API-Key"]
     if api_key not in cse.API_KEYS:
         return jsonify({"error": "Invalid API key."}), 403
     
@@ -119,10 +119,10 @@ def security_events_query():
 
 @app.route("/security_events", methods=["DELETE"])
 def security_events_prune():
-    if not request.headers.has_key("X-API-Key"):
+    if "X-API-Key" not in request.headers:
         return jsonify({"error": "API key is required."}), 403
 
-    api_key = request.headers.get("X-API-Key")
+    api_key = request.headers["X-API-Key"]
     if api_key not in cse.API_KEYS:
         return jsonify({"error": "Invalid API key."}), 403
     
