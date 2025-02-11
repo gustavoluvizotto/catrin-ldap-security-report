@@ -10,8 +10,6 @@ import pandas
 from create_database import ALERTS_TABLE_NAME
 from flask import Response, jsonify
 
-ALERTS_DIR_FORMAT = "catrin/measurements/tool=goscanner/format=raw/port={port}/scan={scan}/result={result}/year={year}/month={month:02}/day={day:02}"
-
 
 def push(
     clickhouse_client: clickhouse_connect.driver.client.Client, logs: list[dict]
