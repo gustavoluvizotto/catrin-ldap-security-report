@@ -105,7 +105,7 @@ def _insert_into_starttls_ldap(client, goscanner_dir, scan_date, port):
 
 def prepare_alerts(client):
     # create table
-    _ = client.query(f"CREATE TABLE {ALERTS_TABLE_NAME} (id String, uid UInt32, attacker String, attacker_port UInt16 NULL, sid UInt16, msg String, datetime DateTime('Etc/UTC')) ENGINE = MergeTree ORDER BY (attacker, datetime)")
+    _ = client.query(f"CREATE TABLE {ALERTS_TABLE_NAME} (id String, uid UInt64, attacker String, attacker_port UInt16 NULL, sid UInt32, msg String, datetime DateTime('Etc/UTC')) ENGINE = MergeTree ORDER BY (attacker, datetime)")
     
 
 if __name__ == "__main__":

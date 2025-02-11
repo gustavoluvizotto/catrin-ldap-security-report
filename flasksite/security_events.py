@@ -25,7 +25,7 @@ def push(
                     int(log["rule.attacker.port"]),
                     int(log["rule.sid"]),
                     str(log["rule.name"]),
-                    pandas.to_datetime(log["@timestamp"]).to_pydatetime(),
+                    pandas.to_datetime(log["@timestamp"]).to_pydatetime().replace(tzinfo=None),
                 ]
                 for log in logs
             ],
