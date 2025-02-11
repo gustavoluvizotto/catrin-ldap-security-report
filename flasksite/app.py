@@ -99,7 +99,13 @@ def security_events_push():
     if clickhouse_client is None:
         return jsonify({"error": "No dataset loaded."}), 500
 
-    logs = [json.loads(log) for log in request.data.decode("utf-8").splitlines()]
+    try:
+        try:
+            logs = [json.loads(log) for log in request.data.decode().splitlines()]
+        except:
+            logs = [json.loads(request.data.decode())]
+    except:
+        return jsonify({"error": "Invalid JSON format."}), 400
 
     return se.push(clickhouse_client, logs)
 
