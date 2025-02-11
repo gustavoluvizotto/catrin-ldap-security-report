@@ -6,6 +6,7 @@ import traceback
 import clickhouse_connect
 import clickhouse_connect.driver
 import clickhouse_connect.driver.client
+import pandas
 from create_database import ALERTS_TABLE_NAME
 from flask import Response, jsonify
 
@@ -18,7 +19,7 @@ def push(
     for log in logs:
         try:
             q = f"INSERT INTO {ALERTS_TABLE_NAME} \
-SELECT {log['log.source.id']} as id, {log['log.id.uid']} as uid, {log['rule.attacker.ip']} as attacker, {log['rule.attacker.port']} as attacker_port, {log['rule.sid']} as sid, {log['rule.name']} as msg, formatDateTime(toDate('{log['@timestamp']}'), '%F', 'Etc/UTC') as datetime"
+SELECT {log['log.source.id']} as id, {log['log.id.uid']} as uid, {log['rule.attacker.ip']} as attacker, {log['rule.attacker.port']} as attacker_port, {log['rule.sid']} as sid, {log['rule.name']} as msg, formatDateTime(toDate('{pandas.to_datetime(log['@timestamp']).date()}'), '%F', 'Etc/UTC') as datetime"
             _ = clickhouse_client.query(q)
         except Exception as e:
             return jsonify({"error": traceback.format_exception(e)}), 500
