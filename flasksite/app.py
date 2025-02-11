@@ -23,7 +23,7 @@ clickhouse_client = None
 
 @app.errorhandler(500)
 def handle_bad_request(e):
-    print(traceback.format_exc())
+    app.logger.error(traceback.format_exception(e))
     return 'INTERNAL SERVER ERROR', 500
 
 
