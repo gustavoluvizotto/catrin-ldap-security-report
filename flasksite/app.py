@@ -1,6 +1,7 @@
 __author__ = "Gustavo Luvizotto Cesar"
 
 import json
+import traceback
 
 import clickhouse_connect as chc
 import credentials_clickhouse as c
@@ -11,12 +12,19 @@ import scanning_query as sq
 import scanning_report as sr
 import security_events as se
 import show_mb_results as smr
+import werkzeug
+import werkzeug.exceptions
 from flask import Flask, Response, jsonify, request
 from flask_cors import CORS
 
 app = Flask("NIP")
 CORS(app, resources={r"/*": {"origins": "http://demodev.responsible-internet.org"}})
 clickhouse_client = None
+
+@app.errorhandler(500)
+def handle_bad_request(e):
+    print(traceback.format_exc())
+    return 'INTERNAL SERVER ERROR', 500
 
 
 @app.route("/help", methods=["GET"])
