@@ -4,13 +4,13 @@ import json
 
 def get_path(src_asn, dst_asn=8075):
     if src_asn == 15625:
-        csvFilePath = "ing.csv"
+        csvFilePath = "/flasksite_data/ing.csv"
         data = get_json_from_csv(csvFilePath)
     elif src_asn == 15916:
-        csvFilePath = "abn.csv"
+        csvFilePath = "/flasksite_data/abn.csv"
         data = get_json_from_csv(csvFilePath)
     elif src_asn == 40985:
-        csvFilePath = "eneco.csv"
+        csvFilePath = "/flasksite_data/eneco.csv"
         data = get_json_from_csv(csvFilePath)
     else:
         data = { 'error': 'Invalid input'}

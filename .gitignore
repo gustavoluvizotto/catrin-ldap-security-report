@@ -8,3 +8,5 @@
 /db/
 /credentials_clickhouse.py
 **/*credentials*
+/.shyam_project
+/flasksite_data/
