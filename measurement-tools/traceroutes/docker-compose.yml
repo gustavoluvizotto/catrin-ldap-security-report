@@ -1,0 +1,10 @@
+name: traceroutes
+
+services:
+    mtr-runner:
+        build: .
+        container_name: mtr-runner
+        volumes:
+            - ./results:/app/results  # Mounts local ./results to /app/results in container
+        cap_add:
+            - NET_RAW

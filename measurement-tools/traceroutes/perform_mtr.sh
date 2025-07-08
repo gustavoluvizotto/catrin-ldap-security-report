@@ -30,7 +30,7 @@ PROTOCOL="${2:-icmp}"
 # --- Initialization ---
 # Get the hostname of the machine running the script
 SOURCE_HOSTNAME=$(hostname)
-OUTPUT_FILE="mtr_${TARGET_IP}.csv"
+OUTPUT_FILE="results/mtr_${TARGET_IP}.csv"
 
 # Determine the correct MTR flag based on the PROTOCOL variable and validate it.
 MTR_PROTOCOL_FLAG=""
