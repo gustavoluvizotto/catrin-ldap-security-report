@@ -6,16 +6,16 @@ import traceback
 import clickhouse_connect as chc
 import credentials_clickhouse as c
 import credentials_security_events as cse
-import middlebox_data as mbdata
 import path_data as pdata
 import scanning_query as sq
 import scanning_report as sr
 import security_events as se
-import show_mb_results as smr
 import werkzeug
 import werkzeug.exceptions
 from flask import Flask, Response, jsonify, request
 from flask_cors import CORS
+from middlebox_data import address_map, show_mb_results
+from middlebox_scoring import calculate_middlebox_score
 
 app = Flask("NIP")
 CORS(app, resources={r"/*": {"origins": "http://demodev.responsible-internet.org"}})
