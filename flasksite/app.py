@@ -12,7 +12,7 @@ import scanning_report as sr
 import security_events as se
 import werkzeug
 import werkzeug.exceptions
-from flask import Flask, Response, jsonify, request
+from flask import Flask, Response, jsonify, request, abort
 from flask_cors import CORS
 from middlebox_data import address_map, show_mb_results
 from middlebox_scoring import calculate_middlebox_score
@@ -81,21 +81,23 @@ def report():
 
 @app.route('/middlebox_info/asn/<asn>', methods=['GET'])
 def get_middlebox_data(asn):
-    if asn not in address_map:
+    normalized_asn = asn.upper()
+
+    if normalized_asn not in address_map:
         abort(404, description="ASN not found")
 
     results = []
-    for ip in address_map[asn]:
+    for ip in address_map[normalized_asn]:
         if "could not detect" in ip.lower():
             continue
         data = show_mb_results(ip)
         if "error" not in data:
             score_result = calculate_middlebox_score(ip, data)
-            score_result["asn"] = asn
+            score_result["asn"] = normalized_asn
             results.append(score_result)
 
     return jsonify({
-        "asn": asn,
+        "asn": normalized_asn,
         "middleboxes": results
     })
 
