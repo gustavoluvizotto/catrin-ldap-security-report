@@ -79,13 +79,40 @@ def report():
 
     return sr.scanning_report(clickhouse_client, ip_prefix)
 
-@app.route('/middlebox_info', methods=['GET'])
-def middlebox_info():
-    address = request.args.get('address')
-    if not address:
-        return jsonify({"error": "Address is required"}), 400
+@app.route('/middlebox_info/asn/<asn>', methods=['GET'])
+def get_middlebox_data(asn):
+    if asn not in address_map:
+        abort(404, description="ASN not found")
 
-    return jsonify(smr.get_info_for_address(address))
+    results = []
+    for ip in address_map[asn]:
+        if "could not detect" in ip.lower():
+            continue
+        data = show_mb_results(ip)
+        if "error" not in data:
+            score_result = calculate_middlebox_score(ip, data)
+            score_result["asn"] = asn
+            results.append(score_result)
+
+    return jsonify({
+        "asn": asn,
+        "middleboxes": results
+    })
+
+@app.route('/middlebox_info/ip/<ip>', methods=['GET'])
+def get_middlebox_by_ip(ip):
+    # Search all IPs across all ASNs
+    for asn, ip_list in address_map.items():
+        if ip in ip_list:
+            data = show_mb_results(ip)
+            if "error" not in data:
+                score_result = calculate_middlebox_score(ip, data)
+                score_result["asn"] = asn
+                score_result["raw_data"] = data  # Optionally include full raw middlebox data
+                return jsonify(score_result)
+            else:
+                abort(404, description="IP data not found")
+    abort(404, description="IP not found in known ASNs")
 
 @app.route('/paths/<int:src_asn>/<int:dst_asn>', methods=['GET'])
 def nip_list_paths(src_asn: int, dst_asn: int):

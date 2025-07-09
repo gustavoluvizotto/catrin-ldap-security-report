@@ -1,130 +1,419 @@
-def get_middlebox_ips(address):
-    address_map = {
-        '129.2.248.132': ['128.8.144.162'],
-        '92.27.213.175': ['80.95.199.213'],
-        '132.235.51.88': ['132.235.231.170', '132.235.185.140'],
-        '54.205.164.113': ['Could not detect a middlebox on the path to the target.']
+address_map = {
+        'AS3257': ['199.73.21.102', '193.17.185.13', '92.60.242.196'],
+        'AS702': ['212.208.54.219'],
+        'AS8455': ['31.22.86.254'],
+        'AS174': ['38.46.152.2', '38.119.166.3', '38.104.95.242', '204.29.160.6'],
+        'AS8075': ['Couldn\'t detect any middlebox for this AS.']
     }
-    return address_map.get(address, [])
+
+def get_middlebox_ips(asn):
+    return address_map.get(asn, ['Could not detect a middlebox on the path to the target.'])
 
 def show_mb_results(ip):
-    ip_data = {
-        '128.8.144.162': {
-            "detected_modifications": [
-                "TCP Hash Modified",
-                "Complete Hash Modified",
+    middlebox_data = {
+
+        '199.73.21.102': {
+            "AS Information": {
+                "ASN": "AS3257",
+                "AS Name": "GTT Communications Inc.",
+                "AS Country": "United States of America",
+                "Usage Type": "Data Center/Web Hosting/Transit"
+            },
+            "Geolocation Information": {
+                "Continent": "North America",
+                "Country": "United States of America",
+                "Region": "Massachusetts",
+                "City": "Middleboro"
+            },
+            "Vendor Information": {
+                "Vendor": "Palo Alto Networks",
+                "Product": "PAN-OS"
+            },
+            "Open Ports": [
+                {
+                "Port Number": 22,
+                "Service Name": "SSH"
+                },
+                {
+                "Port Number": 80,
+                "Service Name": "HTTP"
+                },
+                {
+                "Port Number": 443,
+                "Service Name": "HTTPS"
+                },
+                {
+                "Port Number": 4443,
+                "Service Name": "HTTPS"
+                }
+            ],
+            "Vulnerabilities": [
+                "CVE-2024-3400"
+            ],
+            "Detected Modifications": [
+                "TCP MP Capable Removed",
+                "TCP NOP Added",
+                "TCP Timestamp TSVal Modified"
+            ]
+        },
+        '193.17.185.13': {
+            "AS Information": {
+                "ASN": "AS3257",
+                "AS Name": "GTT Communications Inc.",
+                "AS Country": "United States of America",
+                "Usage Type": "Data Center/Web Hosting/Transit"
+            },
+            "Geolocation Information": {
+                "Continent": "Europe",
+                "Country": "Germany",
+                "City": "Munich"
+            },
+            "Vendor Information": {
+                "Vendor": "pfSense",
+                "Product": "FreeBSD"
+            },
+            "Open Ports": [
+                {
+                "Port Number": 80,
+                "Service Name": "HTTP"
+                },
+                {
+                "Port Number": 443,
+                "Service Name": "HTTPS"
+                },
+                {
+                "Port Number": 4443,
+                "Service Name": "HTTPS"
+                }
+            ],
+            "Vulnerabilities": [
+                "CVE-2010-1899",
+                "CVE-2010-3972"
+            ],
+            "Detected Modifications": [
+                "TCP MP Capable Removed",
+                "TCP NOP Added",
+                "TCP Urgent Pointer/Receiver Window Modified"
+            ]
+        },
+        '92.60.242.196': {
+            "AS Information": {
+                "ASN": "AS3257",
+                "AS Name": "GTT Communications Inc.",
+                "AS Country": "United States of America",
+                "Usage Type": "Data Center/Web Hosting/Transit"
+            },
+            "Geolocation Information": {
+                "Continent": "Europe",
+                "Country": "Spain",
+                "City": "Madrid"
+            },
+            "Vendor Information": {
+                "Vendor": "Unkown",
+                "Product": "Unkown"
+            },
+            "Open Ports": [
+                {
+                "Port Number": 443,
+                "Service Name": "HTTPS"
+                }
+            ],
+            "Vulnerabilities": [
+                "No known vulnerabilities"
+            ],
+            "Detected Modifications": [
+                "TCP MP Capable Removed",
+                "TCP NOP Added",
+                "TCP Timestamp Removal"
+            ]
+        },
+        '193.17.185.13': {
+            "AS Information": {
+                "ASN": "AS3257",
+                "AS Name": "GTT Communications Inc.",
+                "AS Country": "United States of America",
+                "Usage Type": "Data Center/Web Hosting/Transit"
+            },
+            "Geolocation Information": {
+                "Continent": "Europe",
+                "Country": "Germany",
+                "City": "Munich"
+            },
+            "Vendor Information": {
+                "Vendor": "pfSense",
+                "Product": "FreeBSD"
+            },
+            "Open Ports": [
+                {
+                "Port Number": 80,
+                "Service Name": "HTTP"
+                },
+                {
+                "Port Number": 443,
+                "Service Name": "HTTPS"
+                },
+                {
+                "Port Number": 4443,
+                "Service Name": "HTTPS"
+                }
+            ],
+            "Vulnerabilities": [
+                "CVE-2010-1899",
+                "CVE-2010-3972"
+            ],
+            "Detected Modifications": [
+                "TCP MP Capable Removed",
+                "TCP NOP Added",
+                "TCP Urgent Pointer/Receiver Window Modified"
+            ]
+        },
+        '212.208.54.219': {
+            "AS Information": {
+                "ASN": "AS702",
+                "AS Name": "Verizon Business EMEA",
+                "AS Country": "United States of America",
+                "Usage Type": "Commercial"
+            },
+            "Geolocation Information": {
+                "Continent": "Europe",
+                "Country": "France",
+                "City": "Paris"
+            },
+            "Vendor Information": {
+                "Vendor": "Fortinet",
+                "Product": "Forti-OS"
+            },
+            "Open Ports": [
+                {
+                "Port Number": 23,
+                "Service Name": "Telnet"
+                },
+                {
+                "Port Number": 80,
+                "Service Name": "HTTP"
+                },
+                {
+                "Port Number": 443,
+                "Service Name": "HTTPS"
+                },
+                                {
+                "Port Number": 500,
+                "Service Name": "IKE"
+                }
+            ],
+            "Vulnerabilities": [
+                "CVE-2023-51385",
+                "CVE-2021-36368",
+                "CVE-2023-51767",
+                "CVE-2019-16905"
+            ],
+            "Detected Modifications": [
+                "TCP MP Capable Removed",
+                "TCP NOP Added",
+                "TCP Timestamp Removal",
+                "TCP Data Offset Modified",
+                "TCP Sack Permitted Removal"
+            ]
+        },
+        '31.22.86.254': {
+            "AS Information": {
+                "ASN": "AS8455",
+                "AS Name": "atom86 BV",
+                "AS Country": "Netherlands",
+                "Usage Type": "Data Center/Web Hosting/Transit"
+            },
+            "Geolocation Information": {
+                "Continent": "Europe",
+                "Country": "Netherlands",
+                "City": "Amstelveen"
+            },
+            "Vendor Information": {
+                "Vendor": "Mikrotik",
+                "Product": "RouterOS"
+            },
+            "Open Ports": [
+                {
+                "Port Number": 80,
+                "Service Name": "HTTP"
+                },
+                {
+                "Port Number": 443,
+                "Service Name": "HTTPS"
+                },
+                {
+                "Port Number": 500,
+                "Service Name": "IKE"
+                },
+                                {
+                "Port Number": 2000,
+                "Service Name": "MIKROTIK-BW"
+                }
+            ],
+            "Vulnerabilities": [
+                "No known vulnerabilities"
+            ],
+            "Detected Modifications": [
                 "TCP MP Capable Removed",
                 "TCP NOP Added"
-            ],
-            "geolocation_information": {
-                "country": "United States of America [US]",
-                "region": "Maryland",
-                "city": "College Park",
-                "coordinates": "38.992080, -76.952830 (38°59'31\"N 76°57'10\"W)"
-            },
-            "as_information": {
-                "asn": "AS27",
-                "as_name": "UMDNET",
-                "organization": "University of Maryland",
-                "total_ipv4_prefixes": 7,
-                "total_ipv4_address": 139776
-            },
-            "vendor_information": "Vendor could not be identified",
-            "security_evaluation": {
-                "open_ports": [
-                    {"port_number": 179, "service_name": "BGP"}
-                ],
-                "vulnerabilities": "There is no vulnerability for this middlebox."
-            }
+            ]
         },
-        '80.95.199.213': {
-            "detected_modifications": [
-                "IP Hash Modified",
-                "TCP Hash Modified",
-                "Complete Hash Modified",
+        '38.46.152.2': {
+            "AS Information": {
+                "ASN": "AS174",
+                "AS Name": "Cogent Communications",
+                "AS Country": "United States of America",
+                "Usage Type": "ISP"
+            },
+            "Geolocation Information": {
+                "Continent": "North America",
+                "Country": "Canada",
+                "City": "Mississauga"
+            },
+            "Vendor Information": {
+                "Vendor": "Check Point",
+                "Product": "GAIA-OS"
+            },
+            "Open Ports": [
+                {
+                "Port Number": 264,
+                "Service Name": "CHECKPOINT_TOPOLOGY"
+                },
+                {
+                "Port Number": 443,
+                "Service Name": "HTTPS"
+                },
+                {
+                "Port Number": 500,
+                "Service Name": "IKE"
+                }
+            ],
+            "Vulnerabilities": [
+                "No known vulnerabilities"
+            ],
+            "Detected Modifications": [
                 "TCP MP Capable Removed",
-                "TCP NOP Added"
-            ],
-            "geolocation_information": {
-                "country": "United Kingdom of Great Britain and Northern Ireland [GB]",
-                "region": "England",
-                "city": "London",
-                "coordinates": "51.508530, -0.125740 (51°30'31\"N 0°7'33\"W)"
-            },
-            "as_information": {
-                "asn": "AS51561",
-                "as_name": "AS-ICUK",
-                "organization": "ICUK Computing Services Limited",
-                "total_ipv4_prefixes": 56,
-                "total_ipv4_address": 58690
-            },
-            "vendor_information": {
-                "cpes": [
-                    "o:microsoft:windows",
-                    "a:microsoft:internet_information_services",
-                    "a:microsoft:internet_information_services:7.5"
-                ]
-            },
-            "security_evaluation": {
-                "open_ports": [
-                    {"port_number": 80, "service_name": "HTTP"},
-                    {"port_number": 264, "service_name": "CHECKPOINT_TOPOLOGY"},
-                    {"port_number": 389, "service_name": "LDAP"},
-                    {"port_number": 443, "service_name": "HTTP"},
-                    {"port_number": 4433, "service_name": "HTTP"}
-                ],
-                "vulnerabilities": [
-                    "CVE-2010-1899",
-                    "CVE-2010-3972",
-                    "CVE-2010-2730"
-                ]
-            }
+                "TCP NOP Added",
+                "TCP Timestamp TSVal Modified"
+            ]
         },
-        '132.235.231.170': {
-            "detected_modifications": [
-                "Receiver Window or Urgent Pointer Modified"
+        '38.119.166.3': {
+            "AS Information": {
+                "ASN": "AS174",
+                "AS Name": "Cogent Communications",
+                "AS Country": "United States of America",
+                "Usage Type": "ISP"
+            },
+            "Geolocation Information": {
+                "Continent": "North America",
+                "Country": "United States of America",
+                "Region": "Washington",
+                "City": "Renton"
+            },
+            "Vendor Information": {
+                "Vendor": "Redhat",
+                "Product": "Enterprise Linux"
+            },
+            "Open Ports": [
+                {
+                "Port Number": 8122,
+                "Service Name": "HTTP"
+                },
+                {
+                "Port Number": 8123,
+                "Service Name": "HTTP"
+                },
+                {
+                "Port Number": 8143,
+                "Service Name": "HTTP"
+                },
+                {
+                "Port Number": 8180,
+                "Service Name": "HTTP"
+                }
             ],
-            "geolocation_information": {
-                "country": "United States of America [US]",
-                "region": "Ohio",
-                "city": "Athens",
-                "coordinates": "39.316150, -82.095210 (39°18'58\"N 82°5'43\"W)"
-            },
-            "as_information": {
-                "asn": "AS17135",
-                "as_name": "OHIOU",
-                "organization": "Ohio University",
-                "total_ipv4_prefixes": 4,
-                "total_ipv4_address": 82688
-            },
-            "vendor_information": "Vendor could not be identified",
-            "security_evaluation": "No information available"
+            "Vulnerabilities": [
+                "No known vulnerabilities"
+            ],
+            "Detected Modifications": [
+                "IP Total Length Modified",
+                "TCP Timestamp TSVal Modified",
+                "TCP Data Offset Modified"
+            ]
         },
-        '132.235.185.140': {
-            "detected_modifications": [
-                "Timestamp Removed or Data set to 0",
-                "Complete Hash Modified",
-                "TCP Sack Permitted Removed",
-                "TCP Timestamp Removed",
-                "TCP NOP Added"
+        '38.104.95.242': {
+            "AS Information": {
+                "ASN": "AS174",
+                "AS Name": "Cogent Communications",
+                "AS Country": "United States of America",
+                "Usage Type": "ISP"
+            },
+            "Geolocation Information": {
+                "Continent": "North America",
+                "Country": "United States of America",
+                "Region": "Florida",
+                "City": "Miami"
+            },
+            "Vendor Information": {
+                "Vendor": "Check Point",
+                "Product": "GAIA-OS"
+            },
+            "Open Ports": [
+                {
+                "Port Number": 264,
+                "Service Name": "CHECKPOINT_TOPOLOGY"
+                },
+                {
+                "Port Number": 500,
+                "Service Name": "IKE"
+                },
+                {
+                "Port Number": 18264,
+                "Service Name": "HTTP"
+                }
             ],
-            "geolocation_information": {
-                "country": "United States of America [US]",
-                "region": "Ohio",
-                "city": "Athens",
-                "coordinates": "39.316150, -82.095210 (39°18'58\"N 82°5'43\"W)"
+            "Vulnerabilities": [
+                "CVE-2023-51385"
+            ],
+            "Detected Modifications": [
+                "TCP MP Capable Removed",
+                "TCP NOP Added",
+                "TCP Timestamp TSVal Modified",
+                "TSecr/RW or UP Modified"
+            ]
+        },
+        '204.29.160.6': {
+            "AS Information": {
+                "ASN": "AS174",
+                "AS Name": "Cogent Communications",
+                "AS Country": "United States of America",
+                "Usage Type": "ISP"
             },
-            "as_information": {
-                "asn": "AS17135",
-                "as_name": "OHIOU",
-                "organization": "Ohio University",
-                "total_ipv4_prefixes": 4,
-                "total_ipv4_address": 82688
+            "Geolocation Information": {
+                "Continent": "North America",
+                "Country": "United States of America",
+                "Region": "Florida",
+                "City": "Jacksonville"
             },
-            "vendor_information": "Vendor could not be identified",
-            "security_evaluation": "No information available"
+            "Vendor Information": {
+                "Vendor": "Palo Alto Networks",
+                "Product": "PAN-OS"
+            },
+            "Open Ports": [
+                {
+                "Port Number": 443,
+                "Service Name": "HTTPS"
+                }
+            ],
+            "Vulnerabilities": [
+                "No known vulnerabilities"
+            ],
+            "Detected Modifications": [
+                "TCP Timestamp Tsecr Modified",
+                "TCP Sack Permitted Removal",
+                "TCP Sequence Number Modified"
+            ]
         }
+
     }
 
-    return ip_data.get(ip, {"error": "IP address not found"})
-
+    return middlebox_data.get(ip, {"error": "IP address not found"})
