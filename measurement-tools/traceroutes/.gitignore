@@ -1,1 +1,3 @@
 /results/*.csv
+/results/*.log
+/credentials
