@@ -45,14 +45,14 @@ MILD_RISK = 1  # <=50%
 MODERATE_RISK = 2  # <=75%
 HIGH_RISK = 3  # >75%
 
-def read_p4_data():
+def read_p4_data(filepath):
     # Define the struct format (little endian '<' or big endian '>')
     # '<' = little-endian, standard size (no padding)
     fmt = '<BBIBB'
 
     record_size = struct.calcsize(fmt)
 
-    bin_files = glob("../research_data/*.bin")
+    bin_files = glob(filepath)
 
     p4_data = dict({})
     for bin_file in bin_files:
@@ -60,24 +60,25 @@ def read_p4_data():
             data = f.read(record_size)
 
         # Unpack into a tuple
-        kind, length, as_number, as_country, last_byte = struct.unpack(fmt, data)
+        _, _, as_number, as_country, last_byte = struct.unpack(fmt, data)
         as_type = (last_byte >> 7) & 0x01
         as_rov_score = (last_byte >> 6) & 0x01
         as_manrs_member = (last_byte >> 5) & 0x01
         middlebox_avg_risk_level = (last_byte >> 3) & 0x03
-        padding = last_byte & 0x07
-        p4_data[bin_file] = {
-            "kind": kind,
-            "length": length,
-            "as_number": as_number,
+        #padding = last_byte & 0x07
+        p4_data[as_number] = {
+            #"kind": kind,
+            #"length": length,
             "as_country": as_country,
             "as_type": as_type,
             "as_rov_score": as_rov_score,
             "as_manrs_member": as_manrs_member,
             "middlebox_avg_risk_level": middlebox_avg_risk_level,
-            "padding": padding
+            #"padding": padding,
+            "is_mocked": True
         }
     return p4_data
+
 
 def print_p4_binaries_json(p4_json):
     for bin_file, data in p4_json.items():
@@ -87,5 +88,6 @@ def print_p4_binaries_json(p4_json):
 
 
 if __name__ == "__main__":
-    p4_json = read_p4_data()
+    bin_filepath = "../research_data/*.bin"
+    p4_json = read_p4_data(bin_filepath)
     print_p4_binaries_json(p4_json)

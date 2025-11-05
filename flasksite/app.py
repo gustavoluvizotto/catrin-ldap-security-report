@@ -16,10 +16,12 @@ from flask import Flask, Response, jsonify, request, abort
 from flask_cors import CORS
 from middlebox_data import address_map, show_mb_results
 from middlebox_scoring import calculate_middlebox_score
+from as_data import get_as_data
 
 app = Flask("NIP")
 CORS(app, resources={r"/*": {"origins": "http://demodev.responsible-internet.org"}})
 clickhouse_client = None
+AS_DATA = None
 
 @app.errorhandler(500)
 def handle_bad_request(e):
@@ -65,6 +67,23 @@ def scanning_query():
         return jsonify({"error": '"ip_prefix" must be provided for the query.'}), 400
 
     return sq.scanning_query(clickhouse_client, ip_prefix)
+
+
+@app.route("/asn", methods=["GET"])
+def asn_info():
+    asn = request.args.get("asn")
+    if not asn:
+        return jsonify({"error": '"asn" must be provided for the query.'}), 400
+
+    try:
+        asn_int = int(asn)
+    except ValueError:
+        return jsonify({"error": '"asn" must be an integer. E.g: 15916.'}), 400
+
+    return jsonify({
+        "asn": asn_int,
+        "info": AS_DATA.get(asn_int, {})
+    }), 200
 
 
 @app.route("/scanning_report", methods=["GET"])
@@ -182,5 +201,5 @@ def security_events_prune():
 
 if __name__ == "__main__":
     clickhouse_client = chc.get_client(host=c.host, port=c.port, username=c.default_user, password=c.default_password)
-
+    AS_DATA = get_as_data()
     app.run(port=5000, host="0.0.0.0", use_reloader=False, debug=True)
