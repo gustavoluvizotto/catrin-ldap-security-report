@@ -12,6 +12,9 @@ def get_path(src_asn, dst_asn=8075):
     elif src_asn == 40985:
         csvFilePath = "/flasksite_data/eneco.csv"
         data = get_json_from_csv(csvFilePath)
+    elif src_asn == 65537:
+        csvFilePath = "/flasksite_data/p4_mock.csv"
+        data = get_json_from_csv(csvFilePath)
     else:
         data = { 'error': 'Invalid input'}
     return data

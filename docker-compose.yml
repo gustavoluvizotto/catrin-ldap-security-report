@@ -25,6 +25,7 @@ services:
       - ./flasksite:/flasksite:rw
       - flasksite_dynamic:/flasksite_dynamic:rw
       - ./flasksite_data:/flasksite_data:rw
+      - ./research_data:/research_data:ro
     restart: unless-stopped
     ports:
       - "5000:5000"
