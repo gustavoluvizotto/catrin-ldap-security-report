@@ -61,11 +61,12 @@ def read_p4_data(filepath):
 
         # Unpack into a tuple
         _, _, as_number, as_country, last_byte = struct.unpack(fmt, data)
-        as_type = (last_byte >> 7) & 0x01
-        as_rov_score = (last_byte >> 6) & 0x01
-        as_manrs_member = (last_byte >> 5) & 0x01
-        middlebox_avg_risk_level = (last_byte >> 3) & 0x03
-        #padding = last_byte & 0x07
+
+        as_type                   = (last_byte >> 0) & 0x07  # bits 2..0
+        as_rov_score              = (last_byte >> 3) & 0x01  # bit 3
+        as_manrs_member           = (last_byte >> 4) & 0x01  # bit 4
+        middlebox_avg_risk_level  = (last_byte >> 5) & 0x03  # bits 6..5
+        #padding                   = (last_byte >> 7) & 0x01  # bit 7
         p4_data[as_number] = {
             #"kind": kind,
             #"length": length,
@@ -82,7 +83,7 @@ def read_p4_data(filepath):
 
 def print_p4_binaries_json(p4_json):
     for bin_file, data in p4_json.items():
-        print(f"File: {bin_file}")
+        print(f"ASN: {bin_file}")
         for key, value in data.items():
             print(f"  {key}: {value}")
 
