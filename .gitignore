@@ -2,6 +2,7 @@
 /.idea/*
 /.vscode/*
 /research_data/*
+!/research_data/p4_fake_data_*.bin
 /venv/*
 **/*/__pycache__/*
 /__pycache__/
@@ -10,3 +11,4 @@
 **/*credentials*
 /.shyam_project
 /flasksite_data/
+a.out
