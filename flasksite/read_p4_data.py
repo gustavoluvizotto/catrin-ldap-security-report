@@ -66,7 +66,7 @@ def read_p4_data(filepath):
         as_rov_score              = (last_byte >> 3) & 0x01  # bit 3
         as_manrs_member           = (last_byte >> 4) & 0x01  # bit 4
         middlebox_avg_risk_level  = (last_byte >> 5) & 0x03  # bits 6..5
-        #padding                   = (last_byte >> 7) & 0x01  # bit 7
+        as_ldap_risk              = (last_byte >> 7) & 0x01  # bit 7
         p4_data[as_number] = {
             #"kind": kind,
             #"length": length,
@@ -75,7 +75,7 @@ def read_p4_data(filepath):
             "as_rov_score": as_rov_score,
             "as_manrs_member": as_manrs_member,
             "middlebox_avg_risk_level": middlebox_avg_risk_level,
-            #"padding": padding,
+            "as_ldap_risk": as_ldap_risk,
             "is_mocked": True
         }
     return p4_data
