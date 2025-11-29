@@ -6,8 +6,8 @@ services:
       - '8123:8123'
       - '9000:9000'
     environment:
-      CLICKHOUSE_USER: 'default'
-      CLICKHOUSE_PASSWORD: '2Hgg8Bs7xV'
+      CLICKHOUSE_USER: ${CLICKHOUSE_USER}
+      CLICKHOUSE_PASSWORD: ${CLICKHOUSE_PASSWORD}
     volumes:
       - ./db:/var/lib/clickhouse
     ulimits:

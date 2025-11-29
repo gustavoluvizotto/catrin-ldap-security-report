@@ -11,5 +11,6 @@
 **/*credentials*
 /.shyam_project
 /flasksite_data/
+/.env
 !/flasksite_data/p4_mock.csv
 a.out
