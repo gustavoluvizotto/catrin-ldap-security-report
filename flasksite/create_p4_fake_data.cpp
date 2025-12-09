@@ -31,7 +31,7 @@ int main(int argc, char** argv) {
     //     /                     \
     // AS1 ---- AS6 --- AS7 ------ AS4
 
-    // AS 1; entry AS; EU; support ROV, MANRS and low MB risk
+    // AS 1 (ASN 65537); entry AS; EU; support ROV, MANRS, low MB risk, no LDAP risk
     h.kind = 0x72;
     h.length = 8;
     h.as_number = 65'537;
@@ -45,7 +45,7 @@ int main(int argc, char** argv) {
     outfile.write(reinterpret_cast<char*>(&h), sizeof(h));
     outfile.close();
 
-    // AS 4; exit AS and it must support ROV, MANRS and low MB risk
+    // AS 4 (ASN 65538); exit AS; EU; support ROV, MANRS, low MB risk, no LDAP risk
     h.kind = 0x72;
     h.length = 8;
     h.as_number = 65'538;
@@ -60,7 +60,7 @@ int main(int argc, char** argv) {
     outfile.close();
 
     // Upper path (EU)
-    // AS 2; has MANRS and ROV, mild MB risk
+    // AS 2 (ASN 65539); has MANRS and ROV, mild MB risk, no LDAP risk
     h.kind = 0x72;
     h.length = 8;
     h.as_number = 65'539;
@@ -74,7 +74,7 @@ int main(int argc, char** argv) {
     outfile.write(reinterpret_cast<char*>(&h), sizeof(h));
     outfile.close();
 
-    // AS 3; has MANRS and ROV, moderate MB risk
+    // AS 3 (ASN 65540); has MANRS and ROV, moderate MB risk, no LDAP risk
     h.kind = 0x72;
     h.length = 8;
     h.as_number = 65'540;
@@ -89,7 +89,7 @@ int main(int argc, char** argv) {
     outfile.close();
 
     // Lower path (NON-EU)
-    // AS 6; no MANRS, no ROV, low MB risk
+    // AS 6 (ASN 65541); no MANRS, no ROV, low MB risk, with LDAP risk
     h.kind = 0x72;
     h.length = 8;
     h.as_number = 65'541;
@@ -103,7 +103,7 @@ int main(int argc, char** argv) {
     outfile.write(reinterpret_cast<char*>(&h), sizeof(h));
     outfile.close();
 
-    // AS 7; no MANRS, has ROV, low MB risk
+    // AS 7 (ASN 65542); no MANRS, has ROV, low MB risk, with LDAP risk
     h.kind = 0x72;
     h.length = 8;
     h.as_number = 65'542;
