@@ -98,7 +98,53 @@ def query(
         return jsonify({"error": traceback.format_exception(e)}), 500
 
 
-def _get_alert_data(client: clickhouse_connect.driver.client.Client, ip_prefix: str):
+def aggregate(
+    clickhouse_client: clickhouse_connect.driver.client.Client, ip_prefix: str
+) -> tuple[Response, int]:
+    """
+    return:
+        int, int
+    """
+
+    try:
+        converted_ip_prefix = ipaddress.ip_network(ip_prefix)
+        if converted_ip_prefix.prefixlen < 20:  # max prefix length
+            return (
+                jsonify(
+                    {"error": '"ip_prefix" length must be greater than or equal 20.'}
+                ),
+                400,
+            )
+    except ValueError as e:
+        return (
+            jsonify(
+                {
+                    "error": f'Invalid "ip_prefix". Error: {traceback.format_exception(e)}'
+                }
+            ),
+            400,
+        )
+
+    try:
+        events = _get_alert_data(clickhouse_client, ip_prefix)
+        # filtered_results = filter(lambda: True, result)
+        ips = set(event["attacker"] for event in events)
+        result = len(ips)
+        return jsonify(result), 200
+    except KeyError as e:
+        return (
+            jsonify(
+                {
+                    "error": f"Invalid dataset key. Error: {traceback.format_exception(e)}"
+                }
+            ),
+            500,
+        )
+    except Exception as e:
+        return jsonify({"error": traceback.format_exception(e)}), 500
+
+
+def _get_alert_data(client: clickhouse_connect.driver.client.Client, ip_prefix: str) -> list[dict]:
     zmap_pdf = client.query_df(
         f"SELECT * FROM {ALERTS_TABLE_NAME} WHERE isIPAddressInRange(attacker, '{ip_prefix}')"
     )

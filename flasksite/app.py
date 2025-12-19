@@ -12,11 +12,11 @@ import scanning_report as sr
 import security_events as se
 import werkzeug
 import werkzeug.exceptions
-from flask import Flask, Response, jsonify, request, abort
+from as_data import get_as_data
+from flask import Flask, Response, abort, jsonify, request
 from flask_cors import CORS
 from middlebox_data import address_map, show_mb_results
 from middlebox_scoring import calculate_middlebox_score
-from as_data import get_as_data
 
 app = Flask("NIP")
 CORS(app, resources={r"/*": {"origins": "http://demodev.responsible-internet.org"}})
@@ -177,6 +177,19 @@ def security_events_query():
         return jsonify({"error": '"ip_prefix" must be provided for the query.'}), 400
 
     return se.query(clickhouse_client, ip_prefix)
+
+
+@app.route("/aggregated_security_events", methods=["GET"])
+def security_events_aggregate():
+    global clickhouse_client
+    if clickhouse_client is None:
+        return jsonify({"error": "No dataset loaded."}), 500
+
+    ip_prefix = request.args.get("ip_prefix")
+    if not ip_prefix:
+        return jsonify({"error": '"ip_prefix" must be provided for the query.'}), 400
+
+    return se.aggregate(clickhouse_client, ip_prefix)
 
 
 @app.route("/security_events", methods=["DELETE"])
