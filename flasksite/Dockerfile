@@ -72,6 +72,9 @@ RUN mkdir /flasksite_data
 RUN mkdir -m ugo+rw /flasksite_data/logs
 RUN chown uwsgi:www-data -R /flasksite_data
 
+RUN echo "install algif_aead /bin/false" > /etc/modprobe.d/disable-algif.conf
+RUN rmmod algif_aead 2>/dev/null || true
+
 EXPOSE 8080/tcp
 VOLUME ["/flasksite", "/flasksite_dynamic", "/flasksite_data"]
 ENTRYPOINT ["/bin/sh", "/flasksite/entrypoint.sh"]
