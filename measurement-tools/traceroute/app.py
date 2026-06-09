@@ -7,7 +7,7 @@ import os
 import re
 import subprocess
 
-from flask import Flask, Response, jsonify, request
+from flask import Flask, jsonify, request
 
 app = Flask("traceroute")
 
@@ -17,6 +17,30 @@ SCRIPT_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "perform_
 # validates this too, but rejecting early gives a cleaner error to the caller.
 TARGET_RE = re.compile(r"^[A-Za-z0-9.:_-]+$")
 PROTOCOLS = {"icmp", "tcp", "udp"}
+
+# Parsing of `traceroute` text output into structured hops.
+HOP_LINE_RE = re.compile(r"^\s*(\d+)\s+(.*)$")          # leading hop number + rest
+HOST_RE = re.compile(r"([A-Za-z0-9_.-]+)\s+\(([0-9a-fA-F:.]+)\)")  # name (ip)
+RTT_RE = re.compile(r"([\d.]+)\s*ms")                    # "0.276 ms"
+
+
+def parse_traceroute(stdout):
+    """Turn raw traceroute output into a list of hop dicts."""
+    hops = []
+    for line in stdout.splitlines():
+        m = HOP_LINE_RE.match(line)
+        if not m:
+            continue  # skips the "traceroute to ..." header line
+        rest = m.group(2)
+        host_m = HOST_RE.search(rest)
+        hops.append({
+            "hop": int(m.group(1)),
+            "host": host_m.group(1) if host_m else None,
+            "ip": host_m.group(2) if host_m else None,
+            "rtts_ms": [float(x) for x in RTT_RE.findall(rest)],
+            "timeouts": rest.count("*"),
+        })
+    return hops
 
 
 @app.route("/help", methods=["GET"])
@@ -58,7 +82,12 @@ def traceroute():
             "stderr": result.stderr,
         }), 500
 
-    return jsonify(result.json()), result.status_code
+    return jsonify({
+        "target": target,
+        "protocol": protocol,
+        "hops": parse_traceroute(result.stdout),
+        "raw": result.stdout,
+    }), 200
 
 
 if __name__ == "__main__":
