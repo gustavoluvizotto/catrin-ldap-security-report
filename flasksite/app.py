@@ -211,8 +211,8 @@ def security_events_prune():
     return se.prune(clickhouse_client, uids)
 
 
-@app.route("/traceroute_measurement")
-def traceroute_measurement():
+@app.route("/traceroute", methods=["GET"])
+def traceroute():
     data = request.get_json(force=True, silent=True) or {}
     target = data.get("target")
     protocol = "icmp" # data.get("protocol", "icmp")
@@ -224,8 +224,8 @@ def traceroute_measurement():
 
     try:
         resp = requests.get(
-            f"192.87.172.49:5003/traceroute",
-            json={"target": target, "protocol": protocol},
+            "http://192.87.172.49:5003/traceroute",
+            params={"target": target},
             timeout=90,
         )
     except requests.RequestException as exc:
