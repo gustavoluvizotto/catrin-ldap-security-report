@@ -11,6 +11,18 @@ services:
         cap_add:
             - NET_RAW
 
+    measurement-server:
+        build:
+            context: .
+            dockerfile: Dockerfile.server
+        container_name: measurement-server
+        ports:
+            - "127.0.0.1:5002:5002"   # internal only — reachable from the host's flasksite
+        volumes:
+            - ./mtr_results:/app/results
+        cap_add:
+            - NET_RAW                  # mtr runs inside this container
+
     mtr-reader:
         build:
             context: .

@@ -22,6 +22,8 @@ app = Flask("NIP")
 CORS(app, resources={r"/*": {"origins": "http://demodev.responsible-internet.org"}})
 clickhouse_client = None
 AS_DATA = None
+MEASUREMENT_SERVER = "http://127.0.0.1:5002"
+
 
 @app.errorhandler(500)
 def handle_bad_request(e):
@@ -200,7 +202,7 @@ def security_events_prune():
     api_key = request.headers["X-API-Key"]
     if api_key not in cse.API_KEYS:
         return jsonify({"error": "Invalid API key."}), 403
-    
+
     global clickhouse_client
     if clickhouse_client is None:
         return jsonify({"error": "No dataset loaded."}), 500
@@ -208,6 +210,31 @@ def security_events_prune():
     uids = [json.loads(log) for log in request.data.decode("utf-8").splitlines()]
 
     return se.prune(clickhouse_client, uids)
+
+
+@app.post("/mtr_measurement")
+def mtr_measurement():
+    data = request.get_json(force=True, silent=True) or {}
+    target = data.get("target")
+    protocol = data.get("protocol", "icmp")
+
+    if not isinstance(target, str) or not TARGET_RE.match(target):
+        return jsonify({"error": "invalid target"}), 400
+    if protocol not in VALID_PROTOCOLS:
+        return jsonify({"error": "invalid protocol"}), 400
+
+    try:
+        resp = requests.post(
+            f"{MEASUREMENT_SERVER}/perform",
+            json={"target": target, "protocol": protocol},
+            timeout=90,
+        )
+    except requests.RequestException as exc:
+        return jsonify({"error": "measurement server unreachable",
+                        "detail": str(exc)}), 502
+
+    return jsonify(resp.json()), resp.status_code
+
 
 # TODO: Implement a publish subscriber model for security events
 
