@@ -26,9 +26,8 @@ def help():
             "description": "Run a traceroute to a target host.",
             "parameters": {
                 "target": "Hostname or IP address to trace a route to.",
-                "protocol": "Optional: 'icmp', 'tcp', or 'udp'. Default is 'icmp'.",
             },
-            "example": 'curl -G -d "target=1.1.1.1" -d "protocol=icmp" http://127.0.0.1:5003/traceroute',
+            "example": 'curl -G -d "target=1.1.1.1" http://127.0.0.1:5003/traceroute',
         }
     }), 200
 
@@ -36,7 +35,7 @@ def help():
 @app.route("/traceroute", methods=["GET"])
 def traceroute():
     target = request.args.get("target", "").strip()
-    protocol = request.args.get("protocol", "icmp").strip().lower()
+    protocol = "icmp" #request.args.get("protocol", "icmp").strip().lower()
 
     if not target or not TARGET_RE.match(target):
         return jsonify({"error": "Missing or invalid 'target' parameter."}), 400
@@ -63,4 +62,4 @@ def traceroute():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5003)
+    app.run(host="0.0.0.0", port=5003, use_reloader=False, debug=True)

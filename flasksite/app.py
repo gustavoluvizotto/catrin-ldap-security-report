@@ -22,7 +22,6 @@ app = Flask("NIP")
 CORS(app, resources={r"/*": {"origins": "http://demodev.responsible-internet.org"}})
 clickhouse_client = None
 AS_DATA = None
-MEASUREMENT_SERVER = "http://127.0.0.1:5002"
 
 
 @app.errorhandler(500)
@@ -212,11 +211,11 @@ def security_events_prune():
     return se.prune(clickhouse_client, uids)
 
 
-@app.post("/mtr_measurement")
-def mtr_measurement():
+@app.route("/traceroute_measurement")
+def traceroute_measurement():
     data = request.get_json(force=True, silent=True) or {}
     target = data.get("target")
-    protocol = data.get("protocol", "icmp")
+    protocol = "icmp" # data.get("protocol", "icmp")
 
     if not isinstance(target, str) or not TARGET_RE.match(target):
         return jsonify({"error": "invalid target"}), 400
@@ -224,8 +223,8 @@ def mtr_measurement():
         return jsonify({"error": "invalid protocol"}), 400
 
     try:
-        resp = requests.post(
-            f"{MEASUREMENT_SERVER}/perform",
+        resp = requests.get(
+            f"192.87.172.49:5003/traceroute",
             json={"target": target, "protocol": protocol},
             timeout=90,
         )
