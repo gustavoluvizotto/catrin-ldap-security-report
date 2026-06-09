@@ -66,7 +66,7 @@ fi
 # --- Main Execution ---
 echo "Running traceroute for target: $TARGET using protocol: $PROTOCOL" >&2
 
-exec traceroute \
+exec sudo traceroute \
     "${PROTOCOL_FLAG[@]}" \
     -m "$MAX_HOPS" \
     -q "$PROBES_PER_HOP" \

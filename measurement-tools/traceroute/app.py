@@ -58,7 +58,7 @@ def traceroute():
             "stderr": result.stderr,
         }), 500
 
-    return jsonify(result.json()), resp.status_code
+    return jsonify(result.json()), result.status_code
 
 
 if __name__ == "__main__":
