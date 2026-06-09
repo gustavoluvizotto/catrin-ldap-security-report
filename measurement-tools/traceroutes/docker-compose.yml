@@ -8,3 +8,15 @@ services:
             - ./mtr_results:/app/results  # Mounts local ./results to /app/results in container
         cap_add:
             - NET_RAW
+
+    mtr-reader:
+        build:
+            context: .
+            dockerfile: Dockerfile.reader
+        container_name: mtr-reader
+        volumes:
+            - ./mtr_results:/app/results:ro
+        environment:
+            - MTR_RESULTS_DIR=/app/results
+        profiles:
+            - reader
