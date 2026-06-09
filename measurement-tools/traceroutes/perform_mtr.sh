@@ -30,7 +30,7 @@ PROTOCOL="${2:-icmp}"
 # --- Initialization ---
 # Get the hostname of the machine running the script
 SOURCE_HOSTNAME=$(hostname)
-OUTPUT_FILE="results/mtr_${TARGET_IP}.csv"
+OUTPUT_FILE="mtr_results/mtr_${TARGET_IP}.csv"
 
 # Determine the correct MTR flag based on the PROTOCOL variable and validate it.
 MTR_PROTOCOL_FLAG=""
@@ -58,8 +58,8 @@ echo "hostname,Mtr_Version,Start_Time,Status,Host,Hop,Ip,Asn,Loss%,Snt, ,Last,Av
 # --- Main Execution ---
 echo "Running MTR for target: $TARGET_IP using protocol: $PROTOCOL"
 
-# Run MTR
-mtr -b -z $MTR_PROTOCOL_FLAG --report --csv -c "$PACKET_COUNT" "$TARGET_IP" | \
+# Run MTR via the mtr-runner Docker container
+podman-compose run --rm mtr-runner -b -z $MTR_PROTOCOL_FLAG --report --csv -c "$PACKET_COUNT" "$TARGET_IP" | \
   tail -n +2 | \
   awk -v hostname="$SOURCE_HOSTNAME" 'BEGIN{FS=OFS=","} {print hostname, $0}' >> "$OUTPUT_FILE"
 

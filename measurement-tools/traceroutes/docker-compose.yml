@@ -2,7 +2,9 @@ name: traceroutes
 
 services:
     mtr-runner:
-        build: .
+        build:
+            context: .
+            dockerfile: Dockerfile
         container_name: mtr-runner
         volumes:
             - ./mtr_results:/app/results  # Mounts local ./results to /app/results in container
