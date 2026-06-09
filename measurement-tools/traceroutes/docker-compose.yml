@@ -5,6 +5,6 @@ services:
         build: .
         container_name: mtr-runner
         volumes:
-            - ./results:/app/results  # Mounts local ./results to /app/results in container
+            - ./mtr_results:/app/results  # Mounts local ./results to /app/results in container
         cap_add:
             - NET_RAW

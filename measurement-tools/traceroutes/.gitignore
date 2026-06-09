@@ -1,4 +1,4 @@
-/results/*.csv
-/results/*.log
+/mtr_results/*.csv
+/mtr_results/*.log
 /credentials
 /upload/upload
