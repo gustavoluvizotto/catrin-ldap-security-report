@@ -7,7 +7,10 @@ COPY measurement_server.go ./
 RUN CGO_ENABLED=0 go build -o /measurement-server .
 
 FROM alpine:latest
-RUN apk add --no-cache mtr && rm -rf /var/cache/apk/*
+# Match the other Dockerfiles in this repo: refresh the index, then install mtr.
+RUN apk update && \
+    apk add --no-cache mtr && \
+    rm -rf /var/cache/apk/*
 WORKDIR /app
 COPY --from=build /measurement-server /usr/local/bin/measurement-server
 EXPOSE 5002

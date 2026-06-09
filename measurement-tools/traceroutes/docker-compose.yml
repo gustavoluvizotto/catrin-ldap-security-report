@@ -15,6 +15,7 @@ services:
         build:
             context: .
             dockerfile: Dockerfile.server
+            network: host   # use the host's DNS/network while building (fixes apk DNS errors)
         container_name: measurement-server
         ports:
             - "127.0.0.1:5002:5002"   # internal only — reachable from the host's flasksite
