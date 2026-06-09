@@ -215,7 +215,11 @@ def security_events_prune():
 @app.route("/traceroute", methods=["GET"])
 def traceroute():
     target = request.args.get("target")
+    print(target)
     protocol = "icmp" # data.get("protocol", "icmp")
+
+    app.logger.info("traceroute: full_path=%s args=%s target=%r",
+                    request.full_path, dict(request.args), target)
 
     if target is None:
         return jsonify({"error": "To target was given."}), 500
@@ -226,6 +230,8 @@ def traceroute():
             params={"target": target},
             timeout=90,
         )
+        app.logger.info("traceroute: forwarded_url=%s status=%s body=%s",
+                        resp.request.url, resp.status_code, resp.text[:200])
     except requests.RequestException as exc:
         return jsonify({"error": "measurement server unreachable",
                         "detail": str(exc)}), 502
