@@ -14,3 +14,4 @@
 /.env
 !/flasksite_data/p4_mock.csv
 a.out
+/**/.DS_Store
