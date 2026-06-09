@@ -217,11 +217,6 @@ def traceroute():
     target = data.get("target")
     protocol = "icmp" # data.get("protocol", "icmp")
 
-    if not isinstance(target, str) or not TARGET_RE.match(target):
-        return jsonify({"error": "invalid target"}), 400
-    if protocol not in VALID_PROTOCOLS:
-        return jsonify({"error": "invalid protocol"}), 400
-
     try:
         resp = requests.get(
             "http://192.87.172.49:5003/traceroute",
