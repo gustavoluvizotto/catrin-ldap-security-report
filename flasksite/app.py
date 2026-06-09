@@ -214,9 +214,11 @@ def security_events_prune():
 
 @app.route("/traceroute", methods=["GET"])
 def traceroute():
-    data = request.get_json(force=True, silent=True) or {}
-    target = data.get("target")
+    target = request.args.get("target")
     protocol = "icmp" # data.get("protocol", "icmp")
+
+    if target is None:
+        return jsonify({"error": "To target was given."}), 500
 
     try:
         resp = requests.get(
