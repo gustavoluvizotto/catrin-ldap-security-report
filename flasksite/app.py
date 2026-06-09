@@ -3,6 +3,7 @@ __author__ = "Gustavo Luvizotto Cesar"
 import json
 import traceback
 
+import requests
 import clickhouse_connect as chc
 import credentials_clickhouse as c
 import credentials_security_events as cse
