@@ -80,8 +80,8 @@ int main(int argc, char** argv) {
     h.as_number = 65'540;
     h.as_country = 19;
     h.as_type = 1;
-    h.as_rov_score = 1;
-    h.as_manrs_member = 1;
+    h.as_rov_score = 0;
+    h.as_manrs_member = 0;
     h.as_mb_risk = 2;
     h.as_ldap_risk = 0;
     outfile = std::ofstream("../research_data/p4_fake_data_as3.bin", std::ios::binary);
@@ -96,9 +96,9 @@ int main(int argc, char** argv) {
     h.as_country = 10;
     h.as_type = 1;
     h.as_rov_score = 1;
-    h.as_manrs_member = 0;
+    h.as_manrs_member = 1;
     h.as_mb_risk = 0;
-    h.as_ldap_risk = 1;
+    h.as_ldap_risk = 0;
     outfile = std::ofstream("../research_data/p4_fake_data_as6.bin", std::ios::binary);
     outfile.write(reinterpret_cast<char*>(&h), sizeof(h));
     outfile.close();
@@ -109,8 +109,8 @@ int main(int argc, char** argv) {
     h.as_number = 65'542;
     h.as_country = 18;
     h.as_type = 1;
-    h.as_rov_score = 0;
-    h.as_manrs_member = 0;
+    h.as_rov_score = 1;
+    h.as_manrs_member = 1;
     h.as_mb_risk = 0;
     h.as_ldap_risk = 0;
     outfile = std::ofstream("../research_data/p4_fake_data_as7.bin", std::ios::binary);
