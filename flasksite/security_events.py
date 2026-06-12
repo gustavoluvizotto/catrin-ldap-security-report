@@ -22,7 +22,7 @@ def push(
                     str(log["log.source.id"]),
                     int(log["log.id.uid"]),
                     str(log["rule.attacker.ip"]),
-                    int(log["rule.attacker.port"]) if "rule.attacker.port" in log["rule"] else None,
+                    int(log["rule.attacker.port"]) if "rule.attacker.port" in log else None,
                     int(log["rule.sid"]),
                     str(log["rule.name"]),
                     pandas.to_datetime(log["@timestamp"]).to_pydatetime().replace(tzinfo=None),
